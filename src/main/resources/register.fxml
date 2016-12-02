@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.RegisterController">
+   <children>
+      <TextField promptText="Nazwisko" translateY="-30.0" />
+      <Button fx:id="submitBtn" mnemonicParsing="false" text="Zarejestruj" translateY="150.0"  />
+      <PasswordField promptText="Password" translateY="60.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </PasswordField>
+      <PasswordField promptText="Confirm password" translateY="90.0" />
+      <TextField promptText="Login" translateY="30.0" />
+      <Label text="Zarejestruj się" translateY="-120.0" />
+      <Button fx:id="backBtn" mnemonicParsing="false" onAction="#onBackBtnClick" text="Powrót" translateY="180.0" />
+      <TextField promptText="Imię" translateY="-60.0" />
+   </children>
+</StackPane>
