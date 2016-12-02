@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
@@ -27,17 +28,39 @@ public class RegisterController implements Initializable {
     @FXML
     private Button submitBtn;
 
-    private DatabaseService databaseController;
+    @FXML
+    private TextField nameText;
+
+    @FXML
+    private TextField surnameText;
+
+    @FXML
+    private TextField loginText;
+
+    @FXML
+    private TextField passwordText;
+
+    @FXML
+    private TextField passwordConfirmationText;
+
+    private DatabaseService databaseService;
+
+    private DatabaseController databaseController;
 
     private static Logger logger = Logger.getLogger(RegisterController.class);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        databaseController = new DatabaseService();
-
+        databaseService = new DatabaseService();
+        databaseController = new DatabaseController(databaseService);
+        
         submitBtn.setOnAction((event) -> {
-            databaseController.connectToDb();
-            databaseController.closeConnection();
+            databaseService.connectToDb();
+
+            databaseController.insertNewUser(nameText.getText(), surnameText.getText());
+            databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+
+            databaseService.closeConnection();
         });
     }
 
