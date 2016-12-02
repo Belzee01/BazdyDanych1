@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static sample.controllers.ControllerUtils.changeSceneContext;
 
 public class RegisterController implements Initializable {
 
@@ -61,21 +62,13 @@ public class RegisterController implements Initializable {
             databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
 
             databaseService.closeConnection();
+
+            changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"));
         });
     }
 
     @FXML
     public void onBackBtnClick(ActionEvent event) {
-        Parent mainPage = null;
-        Scene scene = null;
-        try {
-            mainPage = FXMLLoader.load(getClass().getClassLoader().getResource("sample.fxml"));
-            scene = new Scene(mainPage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+        changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"));
     }
 }

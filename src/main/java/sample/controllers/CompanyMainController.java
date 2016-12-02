@@ -1,7 +1,13 @@
 package sample.controllers;
 
-/**
- * Created by DW on 2016-11-19.
- */
-public class CompanyMainController {
+import javafx.fxml.Initializable;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class CompanyMainController implements Initializable {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }

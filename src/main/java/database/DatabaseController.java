@@ -7,9 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static database.Queries.INSERT_NEW_HASLA;
-import static database.Queries.INSERT_NEW_USER;
-import static database.Queries.SELECT_NEW_USER_ID;
+import static database.Queries.*;
 
 public class DatabaseController {
 
@@ -120,6 +118,33 @@ public class DatabaseController {
                 }
             }
         }
+    }
+
+    public boolean checkCredentials(String login, String password) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean authen = false;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_GIVEN_CREDENTIALS);
+
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+
+            resultSet = preparedStatement.executeQuery();
+            authen = resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return authen;
     }
 
 }

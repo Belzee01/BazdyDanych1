@@ -46,7 +46,7 @@ public class DatabaseService {
 
     public void connectToDb() {
         try {
-            Class.forName(properties.getProperty("JDBC_DRIVER"));
+             Class.forName(properties.getProperty("JDBC_DRIVER"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
