@@ -5,10 +5,7 @@ import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
-import sample.views.AdminListView;
-import sample.views.CompanyListView;
-import sample.views.DoctorsListView;
-import sample.views.ExamineListView;
+import sample.views.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -118,7 +115,7 @@ public class DatabaseController {
         }
     }
 
-    public boolean checkCredentials(String login, String password) throws DatabaseException {
+    public void checkCredentials(String login, String password) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         boolean authen = false;
@@ -142,9 +139,41 @@ public class DatabaseController {
                 }
             }
         }
+        if (!authen)
+            throw new DatabaseException("ERROR - Niepoprawny uzytkownik");
+    }
 
-        if (authen == false)
-            throw new DatabaseException("Niepoprawny uzytkownik");
+    public boolean authenticate(String login, String password) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Integer userId = null;
+        boolean authen = false;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_GIVEN_CREDENTIALS);
+
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                userId = resultSet.getInt("uzytkownicy_id");
+            }
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ADMIN);
+            preparedStatement.setInt(1, userId);
+
+            authen = resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return authen;
     }
@@ -350,6 +379,59 @@ public class DatabaseController {
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_COMPANY_LIST);
             preparedStatement.setInt(1, companyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public ObservableList<PatientListView> selectAllPatients() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<PatientListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_PACIENT);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data.add(
+                        new PatientListView(
+                                resultSet.getInt("id"),
+                                resultSet.getString("imie"),
+                                resultSet.getString("nazwisko"),
+                                resultSet.getInt("firmy_id")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromPatientList(int patientId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_PATIENT_LIST);
+            preparedStatement.setInt(1, patientId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

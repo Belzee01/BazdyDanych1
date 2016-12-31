@@ -70,24 +70,26 @@ public class Controller implements Initializable {
         databaseController = new DatabaseController(databaseService);
         dataLoader = new DataLoader(databaseService);
 
-        databaseService.connectToDb();
-
         loginBtn.setOnAction(event -> {
+            databaseService.connectToDb();
             try {
-                if (databaseController.checkCredentials(loginText.getText(), passwordText.getText())) {
+                databaseController.checkCredentials(loginText.getText(), passwordText.getText());
+                if (databaseController.authenticate(loginText.getText(), passwordText.getText())) {
                     changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
                 } else {
                     changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"));
                 }
             } catch (DatabaseException e) {
-                e.printStackTrace();
+                logger.info(e.getMessage());
             } finally {
                 databaseService.closeConnection();
             }
         });
 
         loaderBtn.setOnAction(event -> {
+            databaseService.connectToDb();
             dataLoader.putMockDataInDatabase();
+            databaseService.closeConnection();
         });
     }
 

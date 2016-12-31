@@ -51,7 +51,7 @@ public class AdminMainController implements Initializable{
         });
 
         pacientsBtn.setOnAction(event -> {
-
+            changeSceneContext(event, getClass().getClassLoader().getResource("patientList.fxml"));
         });
 
         examinesBtn.setOnAction(event -> {

@@ -14,6 +14,8 @@ public class Queries {
 
     public static String SELECT_GIVEN_CREDENTIALS = "select * from hasla where login=? and password=?;";
 
+    public static String SELECT_ADMIN = "select * from admini where uzytkownicy_id=?;";
+
     public static String INSERT_NEW_ADMIN = "INSERT INTO admini (uzytkownicy_id) VALUES(?);";
 
     public static String INSERT_NEW_ADMINS = "INSERT INTO admini (id, uzytkownicy_id) VALUES(?, ?);";
@@ -24,13 +26,15 @@ public class Queries {
 
     public static String INSERT_NEW_COMPANY = "INSERT INTO firmy (id, nazwa, nip, adres) VALUES(?, ?, ?, ?);";
 
+    public static String INSERT_NEW_PATIENT = "INSERT INTO pacjent (id, imie, nazwisko, firmy_id) VALUES(?, ?, ?, ?);";
+
     public static class StandardUser {
 
     }
 
     public static class AdminUser {
         public static String SELECT_ALL_COMAPNIES = "select * from firmy;";
-        public static String SELECT_ALL_PACIENT = "select * from pacjenci;";
+        public static String SELECT_ALL_PACIENT = "select * from pacjent;";
         public static String SELECT_ALL_ADMINS = "select * from admini;";
         public static String SELECT_ALL_EXAMINES = "select * from badania;";
         public static String SELECT_ALL_DOCTORS = "select * from lekarze";
@@ -42,10 +46,11 @@ public class Queries {
         public static String DELETE_FROM_EXAMINE_LIST = "delete from badania where id =?;";
         public static String DELETE_FROM_DOCTORS_LIST = "delete from lekarze where id =?;";
         public static String DELETE_FROM_COMPANY_LIST = "delete from firmy where id =?;";
+        public static String DELETE_FROM_PATIENT_LIST = "delete from pacjent where id =?;";
 
     }
 
     public static class DataLoaderQueries {
-        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badania; delete from lekarze;delete from firmy;";
+        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
     }
 }

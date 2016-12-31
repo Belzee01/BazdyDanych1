@@ -40,7 +40,7 @@ public class DataLoader {
     final CredentialsDTO[] hasla =
             {
                     CredentialsDTO.builder().id(1).login("admin").password("admin").user_id(1).build(),
-                    CredentialsDTO.builder().id(2).login("testLogin2").password("testPassword2").user_id(2).build(),
+                    CredentialsDTO.builder().id(2).login("user").password("user").user_id(2).build(),
                     CredentialsDTO.builder().id(3).login("testLogin3").password("testPassword3").user_id(3).build()
             };
 
@@ -63,6 +63,13 @@ public class DataLoader {
                     CompanyDTO.builder().id(1).name("Firma 1").nip("NIP 1").address("Adres 1").build(),
                     CompanyDTO.builder().id(2).name("Firma 2").nip("NIP 2").address("Adres 2").build(),
                     CompanyDTO.builder().id(3).name("Firma 3").nip("NIP 3").address("Adres 3").build()
+            };
+
+    final PatientDTO[] patientDTOS =
+            {
+                    PatientDTO.builder().id(1).name("Imie 1").surname("Nazwisko 1").companyId(1).build(),
+                    PatientDTO.builder().id(2).name("Imie 2").surname("Nazwisko 2").companyId(2).build(),
+                    PatientDTO.builder().id(3).name("Imie 3").surname("Nazwisko 3").companyId(3).build()
             };
 
     public void cleanUpDatabase() {
@@ -219,6 +226,31 @@ public class DataLoader {
                 preparedStatement.setString(2, c.getName());
                 preparedStatement.setString(3, c.getNip());
                 preparedStatement.setString(4, c.getAddress());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(patientDTOS).forEach(p -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_PATIENT);
+
+                preparedStatement.setInt(1, p.getId());
+                preparedStatement.setString(2, p.getName());
+                preparedStatement.setString(3, p.getSurname());
+                preparedStatement.setInt(4, p.getCompanyId());
 
                 preparedStatement.executeUpdate();
             } catch (SQLException s) {
