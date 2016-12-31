@@ -1,13 +1,18 @@
 package database;
 
 import database.services.DatabaseService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
+import sample.views.AdminListView;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static database.Queries.*;
+import static database.Queries.AdminUser.*;
 
 public class DatabaseController {
 
@@ -17,17 +22,6 @@ public class DatabaseController {
 
     public DatabaseController(DatabaseService databaseService) {
         this.databaseService = databaseService;
-    }
-
-    private void cleanUpConnections() {
-        if (databaseService.getConnection() != null) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                databaseService.getConnection().rollback();
-            } catch (SQLException excep) {
-                excep.printStackTrace();
-            }
-        }
     }
 
     public void insertNewUser(String name, String surname) {
@@ -45,7 +39,7 @@ public class DatabaseController {
             logger.info("New user inserted");
         } catch (SQLException e) {
             e.printStackTrace();
-            cleanUpConnections();
+            databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -77,7 +71,7 @@ public class DatabaseController {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            cleanUpConnections();
+            databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -108,7 +102,7 @@ public class DatabaseController {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            cleanUpConnections();
+            databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -134,7 +128,7 @@ public class DatabaseController {
             authen = resultSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
-            cleanUpConnections();
+            databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -145,6 +139,64 @@ public class DatabaseController {
             }
         }
         return authen;
+    }
+
+    public ObservableList<AdminListView> selectAllAdmins() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<AdminListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_ADMINS);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                int userId = resultSet.getInt("uzytkownicy_id");
+                int adminId = resultSet.getInt("id");
+                preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_NAME_AND_SURNAME_BY_ID);
+                preparedStatement.setInt(1, userId);
+                ResultSet user = preparedStatement.executeQuery();
+
+                preparedStatement = databaseService.getConnection().prepareStatement(SELECT_HASLA_LOGIN_BY_USER_ID);
+                preparedStatement.setInt(1, userId);
+                ResultSet haslo = preparedStatement.executeQuery();
+
+                if(user.next() && haslo.next())
+                    data.add(new AdminListView(adminId, haslo.getString("login"), user.getString("imie"), user.getString("nazwisko")));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromAdminList(int adminId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_ADMIN_LIST);
+            preparedStatement.setInt(1, adminId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

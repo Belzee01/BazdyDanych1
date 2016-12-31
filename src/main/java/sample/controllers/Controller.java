@@ -1,6 +1,7 @@
 package sample.controllers;
 
 import database.DatabaseController;
+import database.dataloader.DataLoader;
 import database.services.DatabaseService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +30,9 @@ public class Controller implements Initializable {
     public Button registerBtn;
 
     @FXML
+    public Button loaderBtn;
+
+    @FXML
     public TextField loginText;
 
     @FXML TextField passwordText;
@@ -38,6 +42,8 @@ public class Controller implements Initializable {
     private DatabaseService databaseService = null;
 
     private DatabaseController databaseController = null;
+
+    private DataLoader dataLoader = null;
 
     @FXML
     public void handleRegisterClick(ActionEvent event) {
@@ -60,14 +66,19 @@ public class Controller implements Initializable {
 
         databaseService = new DatabaseService();
         databaseController = new DatabaseController(databaseService);
+        dataLoader = new DataLoader(databaseService);
+
+        databaseService.connectToDb();
 
         loginBtn.setOnAction(event -> {
-            databaseService.connectToDb();
-
             if(databaseController.checkCredentials(loginText.getText(), passwordText.getText())) {
                 databaseService.closeConnection();
                 changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
             }
+        });
+
+        loaderBtn.setOnAction(event -> {
+            dataLoader.putMockDataInDatabase();
         });
     }
 

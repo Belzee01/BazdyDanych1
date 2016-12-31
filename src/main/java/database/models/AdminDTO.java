@@ -1,7 +1,11 @@
 package database.models;
 
-/**
- * Created by Kajetan on 2016-12-02.
- */
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
 public class AdminDTO {
+    private Integer id;
+    private Integer user_id;
 }

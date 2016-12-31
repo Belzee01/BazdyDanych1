@@ -46,3 +46,4 @@ fabric.properties
 /.idea/
 /JavaFXTest.iml
 /src/main/main.iml
+/target/

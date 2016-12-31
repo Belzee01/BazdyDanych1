@@ -73,4 +73,15 @@ public class DatabaseService {
     public Connection getConnection() {
         return connection;
     }
+
+    public void cleanUpConnections() {
+        if (getConnection() != null) {
+            try {
+                System.err.print("Transaction is being rolled back");
+                getConnection().rollback();
+            } catch (SQLException excep) {
+                excep.printStackTrace();
+            }
+        }
+    }
 }
