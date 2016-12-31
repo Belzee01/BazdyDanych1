@@ -13,6 +13,11 @@ DROP TABLE hasla;
 DROP TABLE lekarze;
 DROP TABLE uzytkownicy;
 
+-- Created by Vertabelo (http://vertabelo.com)
+-- Last modification date: 2016-12-31 12:57:21.944
+
+-- tables
+-- Table: admini
 CREATE TABLE admini (
   id serial  NOT NULL,
   uzytkownicy_id int  NOT NULL,
@@ -22,28 +27,28 @@ CREATE TABLE admini (
 -- Table: badania
 CREATE TABLE badania (
   id serial  NOT NULL,
-  data date  NOT NULL,
-  czas time  NOT NULL,
+  nazwa varchar(20)  NOT NULL,
+  cena int  NOT NULL,
+  czas int  NOT NULL,
   CONSTRAINT badania_pk PRIMARY KEY (id)
 );
 
 -- Table: badanie
 CREATE TABLE badanie (
   id serial  NOT NULL,
-  nazwa varchar(20)  NOT NULL,
-  cena money  NOT NULL,
   pacjent_id int  NOT NULL,
   badania_id int  NOT NULL,
   lekarze_id int  NOT NULL,
+  data date  NOT NULL,
   CONSTRAINT badanie_pk PRIMARY KEY (id)
 );
 
 -- Table: firmy
 CREATE TABLE firmy (
   id serial  NOT NULL,
+  nazwa varchar(20)  NOT NULL,
   NIP varchar(20)  NOT NULL,
   adres varchar(20)  NOT NULL,
-  uzytkownicy_id int  NOT NULL,
   CONSTRAINT firmy_pk PRIMARY KEY (id)
 );
 
@@ -122,14 +127,6 @@ NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
 
--- Reference: firmy_uzytkownicy (table: firmy)
-ALTER TABLE firmy ADD CONSTRAINT firmy_uzytkownicy
-FOREIGN KEY (uzytkownicy_id)
-REFERENCES uzytkownicy (id)
-NOT DEFERRABLE
-INITIALLY IMMEDIATE
-;
-
 -- Reference: hasla_uzytkownicy (table: hasla)
 ALTER TABLE hasla ADD CONSTRAINT hasla_uzytkownicy
 FOREIGN KEY (uzytkownicy_id)
@@ -155,3 +152,4 @@ INITIALLY IMMEDIATE
 ;
 
 -- End of file.
+

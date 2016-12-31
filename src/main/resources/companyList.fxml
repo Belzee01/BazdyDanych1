@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controllers.CompanyListController">
+    <children>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <TableView fx:id="tableView" prefHeight="332.0" prefWidth="600.0" />
+                <HBox prefHeight="29.0" prefWidth="600.0">
+                    <children>
+                        <Button fx:id="addNewBtn" mnemonicParsing="false" text="Dodaj" />
+                        <Separator prefHeight="6.0" prefWidth="456.0" />
+                        <Button mnemonicParsing="false" text="Wróć" fx:id="backBtn"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</StackPane>

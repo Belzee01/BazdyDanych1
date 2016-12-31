@@ -16,10 +16,6 @@ import static database.Queries.DataLoaderQueries.CLEAN_UP_ALL_TABLES;
 
 @Data
 public class DataLoader {
-    private List<CompanyDTO> companyDTOS = new ArrayList<>();
-    private List<CredentialsDTO> credentialsDTOS = new ArrayList<>();
-    private List<DoctorsDTO> doctorsDTOS = new ArrayList<>();
-    private List<ExaminesDTO> examinesDTOS = new ArrayList<>();
     private List<ReportsDTO> reportsDTOS = new ArrayList<>();
 
     DatabaseService databaseService = null;
@@ -46,6 +42,27 @@ public class DataLoader {
                     CredentialsDTO.builder().id(1).login("admin").password("admin").user_id(1).build(),
                     CredentialsDTO.builder().id(2).login("testLogin2").password("testPassword2").user_id(2).build(),
                     CredentialsDTO.builder().id(3).login("testLogin3").password("testPassword3").user_id(3).build()
+            };
+
+    final ExaminesDTO[] examinesDTOS =
+            {
+                    ExaminesDTO.builder().id(1).name("Badanie ucha").prise(10).time(1).build(),
+                    ExaminesDTO.builder().id(2).name("Badanie brzucha").prise(20).time(2).build(),
+                    ExaminesDTO.builder().id(3).name("Badanie płuc").prise(10).time(3).build()
+            };
+
+    final DoctorsDTO[] doctorsDTOS =
+            {
+                    DoctorsDTO.builder().id(1).name("Adam").surname("Kowal").build(),
+                    DoctorsDTO.builder().id(2).name("Robert").surname("Kowalski").build(),
+                    DoctorsDTO.builder().id(3).name("Szymon").surname("Nowak").build()
+            };
+
+    final CompanyDTO[] companyDTOS =
+            {
+                    CompanyDTO.builder().id(1).name("Firma 1").nip("NIP 1").address("Adres 1").build(),
+                    CompanyDTO.builder().id(2).name("Firma 2").nip("NIP 2").address("Adres 2").build(),
+                    CompanyDTO.builder().id(3).name("Firma 3").nip("NIP 3").address("Adres 3").build()
             };
 
     public void cleanUpDatabase() {
@@ -139,6 +156,80 @@ public class DataLoader {
                         preparedStatement.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(examinesDTOS).forEach(e -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_EXAMINES);
+
+                preparedStatement.setInt(1, e.getId());
+                preparedStatement.setString(2, e.getName());
+                preparedStatement.setInt(3, e.getPrise());
+                preparedStatement.setInt(4, e.getTime());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(doctorsDTOS).forEach(d -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_DOCTORS);
+
+                preparedStatement.setInt(1, d.getId());
+                preparedStatement.setString(2, d.getName());
+                preparedStatement.setString(3, d.getSurname());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(companyDTOS).forEach(c -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_COMPANY);
+
+                preparedStatement.setInt(1, c.getId());
+                preparedStatement.setString(2, c.getName());
+                preparedStatement.setString(3, c.getNip());
+                preparedStatement.setString(4, c.getAddress());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
                     }
                 }
             }

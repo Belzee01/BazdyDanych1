@@ -18,6 +18,12 @@ public class Queries {
 
     public static String INSERT_NEW_ADMINS = "INSERT INTO admini (id, uzytkownicy_id) VALUES(?, ?);";
 
+    public static String INSERT_NEW_EXAMINES = "INSERT INTO badania (id, nazwa, cena, czas) VALUES(?, ?, ?, ?);";
+
+    public static String INSERT_NEW_DOCTORS = "INSERT INTO lekarze (id, imie, nazwisko) VALUES(?, ?, ?);";
+
+    public static String INSERT_NEW_COMPANY = "INSERT INTO firmy (id, nazwa, nip, adres) VALUES(?, ?, ?, ?);";
+
     public static class StandardUser {
 
     }
@@ -33,9 +39,13 @@ public class Queries {
         public static String SELECT_USER_NAME_AND_SURNAME_BY_ID = "select imie, nazwisko from uzytkownicy where id = ?;";
         public static String SELECT_HASLA_LOGIN_BY_USER_ID = "select login from hasla where uzytkownicy_id=?;";
         public static String DELETE_FROM_ADMIN_LIST = "delete from admini where id =?;";
+        public static String DELETE_FROM_EXAMINE_LIST = "delete from badania where id =?;";
+        public static String DELETE_FROM_DOCTORS_LIST = "delete from lekarze where id =?;";
+        public static String DELETE_FROM_COMPANY_LIST = "delete from firmy where id =?;";
+
     }
 
     public static class DataLoaderQueries {
-        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy;";
+        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badania; delete from lekarze;delete from firmy;";
     }
 }

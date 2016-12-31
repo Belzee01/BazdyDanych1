@@ -2,6 +2,7 @@ package sample.controllers;
 
 import database.DatabaseController;
 import database.dataloader.DataLoader;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +36,8 @@ public class Controller implements Initializable {
     @FXML
     public TextField loginText;
 
-    @FXML TextField passwordText;
+    @FXML
+    TextField passwordText;
 
     private static Logger logger = Logger.getLogger(Controller.class);
 
@@ -71,9 +73,16 @@ public class Controller implements Initializable {
         databaseService.connectToDb();
 
         loginBtn.setOnAction(event -> {
-            if(databaseController.checkCredentials(loginText.getText(), passwordText.getText())) {
+            try {
+                if (databaseController.checkCredentials(loginText.getText(), passwordText.getText())) {
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
+                } else {
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"));
+                }
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+            } finally {
                 databaseService.closeConnection();
-                changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
             }
         });
 

@@ -43,11 +43,11 @@ public class AdminMainController implements Initializable{
         });
 
         comapniesBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"));
+            changeSceneContext(event, getClass().getClassLoader().getResource("companyList.fxml"));
         });
 
         doctorsBtn.setOnAction(event -> {
-
+            changeSceneContext(event, getClass().getClassLoader().getResource("doctorsList.fxml"));
         });
 
         pacientsBtn.setOnAction(event -> {
@@ -55,7 +55,7 @@ public class AdminMainController implements Initializable{
         });
 
         examinesBtn.setOnAction(event -> {
-
+            changeSceneContext(event, getClass().getClassLoader().getResource("examinesList.fxml"));
         });
 
         adminsBtn.setOnAction(event -> {

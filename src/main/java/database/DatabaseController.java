@@ -1,10 +1,14 @@
 package database;
 
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
 import sample.views.AdminListView;
+import sample.views.CompanyListView;
+import sample.views.DoctorsListView;
+import sample.views.ExamineListView;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -114,7 +118,7 @@ public class DatabaseController {
         }
     }
 
-    public boolean checkCredentials(String login, String password) {
+    public boolean checkCredentials(String login, String password) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         boolean authen = false;
@@ -138,6 +142,10 @@ public class DatabaseController {
                 }
             }
         }
+
+        if (authen == false)
+            throw new DatabaseException("Niepoprawny uzytkownik");
+
         return authen;
     }
 
@@ -199,4 +207,161 @@ public class DatabaseController {
         }
     }
 
+    public ObservableList<ExamineListView> selectAllExamines() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<ExamineListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_EXAMINES);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data.add(
+                        new ExamineListView(
+                                resultSet.getInt("id"),
+                                resultSet.getString("nazwa"),
+                                resultSet.getInt("cena"),
+                                resultSet.getInt("czas")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromExamineList(int examineId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_EXAMINE_LIST);
+            preparedStatement.setInt(1, examineId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public ObservableList<DoctorsListView> selectAllDoctors() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<DoctorsListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_DOCTORS);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data.add(
+                        new DoctorsListView(
+                                resultSet.getInt("id"),
+                                resultSet.getString("imie"),
+                                resultSet.getString("nazwisko")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromDoctorsList(int examineId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_DOCTORS_LIST);
+            preparedStatement.setInt(1, examineId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public ObservableList<CompanyListView> selectAllCompanies() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<CompanyListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_COMAPNIES);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data.add(
+                        new CompanyListView(
+                                resultSet.getInt("id"),
+                                resultSet.getString("nazwa"),
+                                resultSet.getString("nip"),
+                                resultSet.getString("adres")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromCompanyList(int companyId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_COMPANY_LIST);
+            preparedStatement.setInt(1, companyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
