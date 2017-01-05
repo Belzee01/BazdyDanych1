@@ -161,7 +161,10 @@ public class DatabaseController {
             preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ADMIN);
             preparedStatement.setInt(1, userId);
 
-            authen = resultSet.next();
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next())
+                authen = true;
         } catch (SQLException e) {
             e.printStackTrace();
             databaseService.cleanUpConnections();
@@ -183,23 +186,11 @@ public class DatabaseController {
         ResultSet resultSet = null;
         ObservableList<AdminListView> data = FXCollections.observableArrayList();
         try {
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_ADMINS);
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_ADMINS_FROM_VIEW);
 
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                int userId = resultSet.getInt("uzytkownicy_id");
-                int adminId = resultSet.getInt("id");
-                preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_NAME_AND_SURNAME_BY_ID);
-                preparedStatement.setInt(1, userId);
-                ResultSet user = preparedStatement.executeQuery();
-
-                preparedStatement = databaseService.getConnection().prepareStatement(SELECT_HASLA_LOGIN_BY_USER_ID);
-                preparedStatement.setInt(1, userId);
-                ResultSet haslo = preparedStatement.executeQuery();
-
-                if(user.next() && haslo.next())
-                    data.add(new AdminListView(adminId, haslo.getString("login"), user.getString("imie"), user.getString("nazwisko")));
-
+                data.add(new AdminListView(resultSet.getInt("id"), resultSet.getString("login"), resultSet.getString("imie"), resultSet.getString("nazwisko")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -219,7 +210,7 @@ public class DatabaseController {
     public void deleteFromAdminList(int adminId) {
         PreparedStatement preparedStatement = null;
         try {
-            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_ADMIN_LIST);
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_ADMIN_LIST_BY_USER_ID);
             preparedStatement.setInt(1, adminId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

@@ -152,4 +152,4 @@ INITIALLY IMMEDIATE
 ;
 
 -- End of file.
-
+create view admin_list_view as select uzytkownicy.id,hasla.login, uzytkownicy.imie, uzytkownicy.nazwisko from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id where uzytkownicy.id in (select uzytkownicy_id from admini);
