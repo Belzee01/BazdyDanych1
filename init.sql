@@ -1,8 +1,7 @@
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2016-12-31 11:29:06.457
+drop view admin_list_view;
+drop view patient_list_view;
+drop view user_view;
 
--- tables
--- Table: admini
 DROP TABLE admini;
 DROP TABLE badanie;
 DROP TABLE badania;
@@ -13,11 +12,7 @@ DROP TABLE hasla;
 DROP TABLE lekarze;
 DROP TABLE uzytkownicy;
 
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2016-12-31 12:57:21.944
 
--- tables
--- Table: admini
 CREATE TABLE admini (
   id serial  NOT NULL,
   uzytkownicy_id int  NOT NULL,
@@ -99,6 +94,7 @@ CREATE TABLE uzytkownicy (
 ALTER TABLE admini ADD CONSTRAINT admini_uzytkownicy
 FOREIGN KEY (uzytkownicy_id)
 REFERENCES uzytkownicy (id)
+ON DELETE CASCADE
 NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
@@ -131,6 +127,7 @@ INITIALLY IMMEDIATE
 ALTER TABLE hasla ADD CONSTRAINT hasla_uzytkownicy
 FOREIGN KEY (uzytkownicy_id)
 REFERENCES uzytkownicy (id)
+ON DELETE CASCADE
 NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
@@ -153,3 +150,8 @@ INITIALLY IMMEDIATE
 
 -- End of file.
 create view admin_list_view as select uzytkownicy.id,hasla.login, uzytkownicy.imie, uzytkownicy.nazwisko from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id where uzytkownicy.id in (select uzytkownicy_id from admini);
+
+CREATE VIEW patient_list_view as select pacjent.id, pacjent.imie, pacjent.nazwisko, firmy.nazwa from pacjent LEFT JOIN firmy ON pacjent.firmy_id = firmy.id;
+
+CREATE VIEW user_view AS select uzytkownicy.id, uzytkownicy.imie, uzytkownicy.nazwisko, hasla.login from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id;
+

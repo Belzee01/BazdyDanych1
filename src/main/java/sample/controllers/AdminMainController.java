@@ -67,7 +67,7 @@ public class AdminMainController implements Initializable{
         });
 
         usersBtn.setOnAction(event -> {
-
+            changeSceneContext(event, getClass().getClassLoader().getResource("userList.fxml"));
         });
     }
 }

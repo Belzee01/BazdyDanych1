@@ -39,8 +39,12 @@ public class Queries {
         public static String SELECT_ALL_EXAMINES = "select * from badania;";
         public static String SELECT_ALL_DOCTORS = "select * from lekarze";
         public static String SELECT_ALL_REPORTS = "select * from raporty;";
+        public static String SELECT_ALL_USERS = "select * from uzytkownicy;";
+
 
         public static String SELECT_ALL_ADMINS_FROM_VIEW = "SELECT * from admin_list_view;";
+
+        public static String SELECT_ALL_PACIENT_VIEW = "select * from patient_list_view;";
 
         public static String SELECT_USER_NAME_AND_SURNAME_BY_ID = "select imie, nazwisko from uzytkownicy where id = ?;";
         public static String SELECT_HASLA_LOGIN_BY_USER_ID = "select login from hasla where uzytkownicy_id=?;";
@@ -49,6 +53,7 @@ public class Queries {
         public static String DELETE_FROM_DOCTORS_LIST = "delete from lekarze where id =?;";
         public static String DELETE_FROM_COMPANY_LIST = "delete from firmy where id =?;";
         public static String DELETE_FROM_PATIENT_LIST = "delete from pacjent where id =?;";
+        public static String DELETE_FROM_USER_LIST = "delete from uzytkownicy where id =?;";
 
     }
 

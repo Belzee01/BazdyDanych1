@@ -13,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
@@ -77,7 +76,7 @@ public class Controller implements Initializable {
                 if (databaseController.authenticate(loginText.getText(), passwordText.getText())) {
                     changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
                 } else {
-                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"));
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userList.fxml"));
                 }
             } catch (DatabaseException e) {
                 logger.info(e.getMessage());

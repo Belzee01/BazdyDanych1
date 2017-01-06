@@ -372,7 +372,7 @@ public class DatabaseController {
             preparedStatement.setInt(1, companyId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.info("Nie można usunąć firmy jeżeli są dla niej zarejestrowni pacjenci");
             databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
@@ -390,7 +390,7 @@ public class DatabaseController {
         ResultSet resultSet = null;
         ObservableList<PatientListView> data = FXCollections.observableArrayList();
         try {
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_PACIENT);
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_PACIENT_VIEW);
 
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -399,7 +399,7 @@ public class DatabaseController {
                                 resultSet.getInt("id"),
                                 resultSet.getString("imie"),
                                 resultSet.getString("nazwisko"),
-                                resultSet.getInt("firmy_id")
+                                resultSet.getString("nazwa")
                         )
                 );
             }
@@ -423,6 +423,58 @@ public class DatabaseController {
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_PATIENT_LIST);
             preparedStatement.setInt(1, patientId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public ObservableList<UserListView> selectAllUsers() {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<UserListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_USERS);
+
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data.add(
+                        new UserListView(
+                                resultSet.getInt("id"),
+                                resultSet.getString("imie"),
+                                resultSet.getString("nazwisko")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public void deleteFromUserList(int userId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_USER_LIST);
+            preparedStatement.setInt(1, userId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,21 +1,19 @@
 package sample.views;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class PatientListView {
+public class UserListView {
     private Integer id;
     private SimpleStringProperty name;
     private SimpleStringProperty surname;
-    private SimpleStringProperty company;
 
-    public PatientListView(Integer id, String name, String surname, String company) {
+    public UserListView(Integer id, String name, String surname) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
         this.surname = new SimpleStringProperty(surname);
-        this.company = new SimpleStringProperty(company);
     }
 
     public Integer getId() {
@@ -48,17 +46,5 @@ public class PatientListView {
 
     public void setSurname(String surname) {
         this.surname.set(surname);
-    }
-
-    public String getCompany() {
-        return company.get();
-    }
-
-    public SimpleStringProperty companyProperty() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company.set(company);
     }
 }
