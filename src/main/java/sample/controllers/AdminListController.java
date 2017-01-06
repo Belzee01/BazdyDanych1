@@ -48,13 +48,11 @@ public class AdminListController implements Initializable{
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
-            databaseService.closeConnection();
+            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
         });
 
         addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/testForm.fxml"));
-            databaseService.closeConnection();
+            changeSceneContext(event, getClass().getClassLoader().getResource("forms/testForm.fxml"), databaseService);
         });
     }
 

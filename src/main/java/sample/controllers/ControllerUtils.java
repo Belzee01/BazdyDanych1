@@ -1,5 +1,6 @@
 package sample.controllers;
 
+import database.services.DatabaseService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,7 +16,8 @@ import java.net.URL;
  */
 public class ControllerUtils {
 
-    public static void changeSceneContext(ActionEvent event, URL url) {
+    public static void changeSceneContext(ActionEvent event, URL url, DatabaseService databaseService) {
+        databaseService.closeConnection();
         Parent mainPage = null;
         Scene scene = null;
         try {
@@ -29,4 +31,17 @@ public class ControllerUtils {
         stage.show();
     }
 
+    public static void changeSceneContext(ActionEvent event, URL url) {
+        Parent mainPage = null;
+        Scene scene = null;
+        try {
+            mainPage = FXMLLoader.load(url);
+            scene = new Scene(mainPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
 }

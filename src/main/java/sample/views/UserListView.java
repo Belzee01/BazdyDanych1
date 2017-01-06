@@ -9,11 +9,21 @@ public class UserListView {
     private Integer id;
     private SimpleStringProperty name;
     private SimpleStringProperty surname;
+    private SimpleStringProperty login;
 
-    public UserListView(Integer id, String name, String surname) {
+    public UserListView(Integer id, String name, String surname, String login) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
         this.surname = new SimpleStringProperty(surname);
+        this.login = new SimpleStringProperty(login);
+    }
+
+    public SimpleStringProperty loginProperty() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login.set(login);
     }
 
     public Integer getId() {

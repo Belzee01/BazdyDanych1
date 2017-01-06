@@ -74,14 +74,12 @@ public class Controller implements Initializable {
             try {
                 databaseController.checkCredentials(loginText.getText(), passwordText.getText());
                 if (databaseController.authenticate(loginText.getText(), passwordText.getText())) {
-                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
                 } else {
-                    changeSceneContext(event, getClass().getClassLoader().getResource("userList.fxml"));
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userList.fxml"), databaseService);
                 }
             } catch (DatabaseException e) {
                 logger.info(e.getMessage());
-            } finally {
-                databaseService.closeConnection();
             }
         });
 

@@ -50,14 +50,14 @@ public class UserListController implements Initializable {
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
-            databaseService.closeConnection();
+            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
         });
     }
 
     private void initializeTableView() {
         TableColumn<UserListView, String> name = new TableColumn<>("Imie uzytkownika");
         TableColumn<UserListView, String> surname = new TableColumn<>("Nazwisko uzytkownika");
+        TableColumn<UserListView, String> login = new TableColumn<>("Login uzytkownika");
         TableColumn action = new TableColumn("Action");
 
         name.setCellValueFactory(
@@ -65,6 +65,10 @@ public class UserListController implements Initializable {
         );
         surname.setCellValueFactory(
                 new PropertyValueFactory<>("surname")
+        );
+
+        login.setCellValueFactory(
+                new PropertyValueFactory<>("login")
         );
 
         action.setCellValueFactory( new PropertyValueFactory<>( "DUMMY" ) );
@@ -109,6 +113,6 @@ public class UserListController implements Initializable {
         data = databaseController.selectAllUsers();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, surname, action);
+        tableView.getColumns().addAll(name, surname, login, action);
     }
 }

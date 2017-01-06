@@ -443,7 +443,7 @@ public class DatabaseController {
         ResultSet resultSet = null;
         ObservableList<UserListView> data = FXCollections.observableArrayList();
         try {
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_USERS);
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_USERS_VIEW);
 
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -451,7 +451,8 @@ public class DatabaseController {
                         new UserListView(
                                 resultSet.getInt("id"),
                                 resultSet.getString("imie"),
-                                resultSet.getString("nazwisko")
+                                resultSet.getString("nazwisko"),
+                                resultSet.getString("login")
                         )
                 );
             }

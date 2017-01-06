@@ -46,6 +46,9 @@ public class Queries {
 
         public static String SELECT_ALL_PACIENT_VIEW = "select * from patient_list_view;";
 
+        public static String SELECT_ALL_USERS_VIEW = "select * from user_view;";
+
+
         public static String SELECT_USER_NAME_AND_SURNAME_BY_ID = "select imie, nazwisko from uzytkownicy where id = ?;";
         public static String SELECT_HASLA_LOGIN_BY_USER_ID = "select login from hasla where uzytkownicy_id=?;";
         public static String DELETE_FROM_ADMIN_LIST_BY_USER_ID = "delete from admini where uzytkownicy_id =?;";

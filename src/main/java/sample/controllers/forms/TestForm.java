@@ -32,8 +32,7 @@ public class TestForm extends ParentForm implements Initializable {
         logger.info("INFO TestForm INIT");
 
         backButton.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
-            databaseService.closeConnection();
+            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
         });
     }
 }

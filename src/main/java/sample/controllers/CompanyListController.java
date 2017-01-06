@@ -49,8 +49,7 @@ public class CompanyListController implements Initializable {
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"));
-            databaseService.closeConnection();
+            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
         });
     }
 

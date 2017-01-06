@@ -61,14 +61,12 @@ public class RegisterController implements Initializable {
             databaseController.insertNewUser(nameText.getText(), surnameText.getText());
             databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
 
-            databaseService.closeConnection();
-
-            changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"));
+            changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
         });
     }
 
     @FXML
     public void onBackBtnClick(ActionEvent event) {
-        changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"));
+        changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
     }
 }
