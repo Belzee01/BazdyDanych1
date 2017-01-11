@@ -36,6 +36,9 @@ public class AdminListController implements Initializable{
     @FXML
     private Button backBtn;
 
+    @FXML
+    private Button editBtn;
+
     private ObservableList<AdminListView> data = null;
 
     @Override
@@ -52,7 +55,11 @@ public class AdminListController implements Initializable{
         });
 
         addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/testForm.fxml"), databaseService);
+            changeSceneContext(event, getClass().getClassLoader().getResource("forms/adminAddForm.fxml"), databaseService);
+        });
+
+        editBtn.setOnAction(event -> {
+            changeSceneContext(event, getClass().getClassLoader().getResource("forms/adminEditForm.fxml"), databaseService);
         });
     }
 

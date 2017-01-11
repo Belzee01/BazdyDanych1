@@ -8,6 +8,8 @@ public class Queries {
 
     public static String SELECT_NEW_USER_ID = "(SELECT id FROM uzytkownicy where nazwisko=?);";
 
+    public static String SELECT_USER_ID = "(SELECT id FROM uzytkownicy where imie = ? and nazwisko=?);";
+
     public static String INSERT_NEW_HASLA = "INSERT INTO hasla (login, password, uzytkownicy_id) VALUES (?, ?, ?);";
 
     public static String INSERT_NEW_HASLAS = "INSERT INTO hasla (id, login, password, uzytkownicy_id) VALUES (?, ?, ?, ?);";
@@ -17,6 +19,8 @@ public class Queries {
     public static String SELECT_ADMIN = "select * from admini where uzytkownicy_id=?;";
 
     public static String INSERT_NEW_ADMIN = "INSERT INTO admini (uzytkownicy_id) VALUES(?);";
+
+    public static String UPDATE_ADMIN = "update admini set (uzytkownicy_id) VALUES(?);";
 
     public static String INSERT_NEW_ADMINS = "INSERT INTO admini (id, uzytkownicy_id) VALUES(?, ?);";
 
@@ -57,6 +61,7 @@ public class Queries {
         public static String DELETE_FROM_COMPANY_LIST = "delete from firmy where id =?;";
         public static String DELETE_FROM_PATIENT_LIST = "delete from pacjent where id =?;";
         public static String DELETE_FROM_USER_LIST = "delete from uzytkownicy where id =?;";
+
 
     }
 

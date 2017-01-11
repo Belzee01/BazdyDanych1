@@ -490,4 +490,74 @@ public class DatabaseController {
             }
         }
     }
+
+    public void insertNewAdmin(String name, String surname, String login) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_ID);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            resultSet = preparedStatement.executeQuery();
+            Integer userId = null;
+
+            while (resultSet.next()) {
+                userId = resultSet.getInt("id");
+            }
+
+            if (userId == null)
+                throw new DatabaseException("Nie znaleziono uzytkownika!");
+
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_ADMIN);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.executeUpdate();
+        }catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void updateAdmin(String name, String surname, String login) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_ID);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            resultSet = preparedStatement.executeQuery();
+            Integer userId = null;
+
+            while (resultSet.next()) {
+                userId = resultSet.getInt("id");
+            }
+
+            if (userId == null)
+                throw new DatabaseException("Nie znaleziono uzytkownika!");
+
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_ADMIN);
+            preparedStatement.setInt(1, userId);
+            preparedStatement.executeUpdate();
+        }catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
