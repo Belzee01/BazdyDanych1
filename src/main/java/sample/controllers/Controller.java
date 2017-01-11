@@ -76,7 +76,7 @@ public class Controller implements Initializable {
                 if (databaseController.authenticate(loginText.getText(), passwordText.getText())) {
                     changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
                 } else {
-                    changeSceneContext(event, getClass().getClassLoader().getResource("userList.fxml"), databaseService);
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
                 }
             } catch (DatabaseException e) {
                 logger.info(e.getMessage());
