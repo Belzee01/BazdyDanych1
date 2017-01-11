@@ -12,12 +12,10 @@
         <VBox prefHeight="200.0" prefWidth="100.0">
             <children>
                 <Separator orientation="VERTICAL" prefHeight="81.0" prefWidth="1.0" />
-                <TextField promptText="Imie" fx:id="nameField" />
+                <TextField fx:id="nameField" promptText="Imie" />
                 <Separator orientation="VERTICAL" prefHeight="54.0" prefWidth="5.0" />
-                <TextField promptText="Nazwisko" fx:id="surnameField"/>
-                <Separator orientation="VERTICAL" prefHeight="96.0" prefWidth="1.0" />
-                <TextField promptText="Login" fx:id="loginField"/>
-                <Separator orientation="VERTICAL" prefHeight="99.0" prefWidth="0.0" />
+                <TextField fx:id="surnameField" promptText="Nazwisko" />
+                <Separator orientation="VERTICAL" prefHeight="195.0" prefWidth="0.0" />
                 <HBox prefHeight="54.0" prefWidth="600.0">
                     <children>
                         <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="98.0" text="Zatwierdź" />

@@ -32,9 +32,9 @@ public class DataLoader {
 
     final UserDTO[] users =
             {
-                    UserDTO.builder().name("test1").surname("surnametest1").build(),
-                    UserDTO.builder().name("test2").surname("surnametest2").build(),
-                    UserDTO.builder().name("test3").surname("surnametest3").build()
+                    UserDTO.builder().name("test1").surname("surnametest1").type("Standard").build(),
+                    UserDTO.builder().name("test2").surname("surnametest2").type("Standard").build(),
+                    UserDTO.builder().name("test3").surname("surnametest3").type("Standard").build()
             };
 
     final CredentialsDTO[] hasla =
@@ -116,6 +116,7 @@ public class DataLoader {
 
                 preparedStatement.setString(1, u.getName());
                 preparedStatement.setString(2, u.getSurname());
+                preparedStatement.setString(3, u.getType());
 
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {

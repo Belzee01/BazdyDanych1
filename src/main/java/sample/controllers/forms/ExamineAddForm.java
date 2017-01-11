@@ -1,7 +1,5 @@
 package sample.controllers.forms;
 
-import database.DatabaseController;
-import database.services.DatabaseService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -27,24 +25,24 @@ public class ExamineAddForm extends ParentForm implements Initializable {
     private TextField nameField;
 
     @FXML
-    private TextField surnameField;
+    private TextField priseField;
 
     @FXML
-    private TextField loginField;
+    private TextField timeField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            saveNewAdminInDB(nameField.getText(), surnameField.getText(), loginField.getText());
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            saveNewExamineInDB(nameField.getText(), priseField.getText(), timeField.getText());
+            changeSceneContext(event, getClass().getClassLoader().getResource("examinesList.fxml"), databaseService);
         });
 
         abortBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            changeSceneContext(event, getClass().getClassLoader().getResource("examinesList.fxml"), databaseService);
         });
     }
 
-    private void saveNewAdminInDB(String name, String surname, String login) {
-        databaseController.insertNewAdmin(name, surname, login);
+    private void saveNewExamineInDB(String name, String prise, String time) {
+        databaseController.insertNewExamine(name, prise, time);
     }
 }

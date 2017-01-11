@@ -2,20 +2,17 @@ package sample.controllers;
 
 import database.DatabaseController;
 import database.services.DatabaseService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.apache.log4j.Logger;
+import sample.ACCOUNT_TYPE;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -28,6 +25,9 @@ public class RegisterController implements Initializable {
 
     @FXML
     private Button submitBtn;
+
+    @FXML
+    private ComboBox typeCombo;
 
     @FXML
     private TextField nameText;
@@ -50,23 +50,34 @@ public class RegisterController implements Initializable {
 
     private static Logger logger = Logger.getLogger(RegisterController.class);
 
+    private ObservableList<ACCOUNT_TYPE> account_types = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         databaseService = new DatabaseService();
         databaseController = new DatabaseController(databaseService);
-        
+
         submitBtn.setOnAction((event) -> {
             databaseService.connectToDb();
 
-            databaseController.insertNewUser(nameText.getText(), surnameText.getText());
+            String type = ((ACCOUNT_TYPE)typeCombo.getValue()).toString();
+            databaseController.insertNewUser(nameText.getText(), surnameText.getText(), type);
             databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
 
             changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
         });
+
+        initializeType();
     }
 
     @FXML
     public void onBackBtnClick(ActionEvent event) {
         changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
+    }
+
+    private void initializeType() {
+        account_types.addAll(ACCOUNT_TYPE.STANDARD, ACCOUNT_TYPE.COMPANY);
+
+        typeCombo.setItems(account_types);
     }
 }

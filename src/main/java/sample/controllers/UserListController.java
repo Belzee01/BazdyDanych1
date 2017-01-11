@@ -33,9 +33,6 @@ public class UserListController implements Initializable {
     private TableView<UserListView> tableView;
 
     @FXML
-    private Button addNewBtn;
-
-    @FXML
     private Button backBtn;
 
     private ObservableList<UserListView> data = null;
@@ -51,10 +48,6 @@ public class UserListController implements Initializable {
 
         backBtn.setOnAction(event -> {
             changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
-        });
-
-        addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/usersAddForm.fxml"), databaseService);
         });
     }
 

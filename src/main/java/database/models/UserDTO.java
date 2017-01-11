@@ -15,8 +15,9 @@ public class UserDTO {
     private Integer id;
     private String name;
     private String surname;
+    private String type;
 
-    public void insert(DatabaseService databaseService, Integer id, String name, String surname) {
+    public void insert(DatabaseService databaseService, Integer id, String name, String surname, String type) {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_USERS);
@@ -24,6 +25,7 @@ public class UserDTO {
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, surname);
+            preparedStatement.setString(4, type);
 
             preparedStatement.executeUpdate();
 
@@ -42,6 +44,6 @@ public class UserDTO {
     }
 
     public void insert(DatabaseService databaseService, UserDTO userDTO) {
-        insert(databaseService, userDTO.getId(), userDTO.getName(), userDTO.getSurname());
+        insert(databaseService, userDTO.getId(), userDTO.getName(), userDTO.getSurname(), userDTO.getType());
     }
 }

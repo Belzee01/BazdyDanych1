@@ -14,9 +14,8 @@
                 <TableView fx:id="tableView" prefHeight="332.0" prefWidth="600.0" />
                 <HBox prefHeight="29.0" prefWidth="600.0">
                     <children>
-                        <Button fx:id="addNewBtn" mnemonicParsing="false" text="Dodaj" />
-                        <Separator prefHeight="6.0" prefWidth="456.0" />
-                        <Button mnemonicParsing="false" text="Wróć" fx:id="backBtn"/>
+                        <Separator prefHeight="8.0" prefWidth="535.0" />
+                        <Button fx:id="backBtn" mnemonicParsing="false" text="Wróć" />
                     </children>
                 </HBox>
             </children>

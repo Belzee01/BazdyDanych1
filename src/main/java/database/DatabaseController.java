@@ -27,7 +27,7 @@ public class DatabaseController {
         this.databaseService = databaseService;
     }
 
-    public void insertNewUser(String name, String surname) {
+    public void insertNewUser(String name, String surname, String type) {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_USER);
@@ -36,6 +36,7 @@ public class DatabaseController {
 
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, type);
 
             preparedStatement.executeUpdate();
 
@@ -669,6 +670,80 @@ public class DatabaseController {
                     e1.printStackTrace();
                 }
             });
+        } catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertNewExamine(String name, String prise, String time) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_EXAMINES);
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, Integer.valueOf(prise));
+            preparedStatement.setInt(3, Integer.valueOf(time));
+
+            preparedStatement.executeUpdate();
+        } catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertNewDoctor(String name, String surname) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_DOCTORS);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+
+            preparedStatement.executeUpdate();
+        } catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertNewCompany(String name, String nip, String adres) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_COMPANY);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, nip);
+            preparedStatement.setString(3, adres);
+
+            preparedStatement.executeUpdate();
         } catch (DatabaseException d) {
             logger.info(d.getMessage());
         } catch (SQLException e) {

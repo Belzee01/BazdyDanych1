@@ -27,24 +27,24 @@ public class CompanyAddForm extends ParentForm implements Initializable {
     private TextField nameField;
 
     @FXML
-    private TextField surnameField;
+    private TextField nipField;
 
     @FXML
-    private TextField loginField;
+    private TextField adresField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            saveNewAdminInDB(nameField.getText(), surnameField.getText(), loginField.getText());
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            saveNewCompanyInDB(nameField.getText(), nipField.getText(), adresField.getText());
+            changeSceneContext(event, getClass().getClassLoader().getResource("companyList.fxml"), databaseService);
         });
 
         abortBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            changeSceneContext(event, getClass().getClassLoader().getResource("companyList.fxml"), databaseService);
         });
     }
 
-    private void saveNewAdminInDB(String name, String surname, String login) {
-        databaseController.insertNewAdmin(name, surname, login);
+    private void saveNewCompanyInDB(String name, String surname, String login) {
+        databaseController.insertNewCompany(name, surname, login);
     }
 }

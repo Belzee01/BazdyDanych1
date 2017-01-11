@@ -2,11 +2,11 @@ package database;
 
 public class Queries {
 
-    public static String INSERT_NEW_USER = "INSERT INTO uzytkownicy (imie, nazwisko) VALUES (?, ?);";
+    public static String INSERT_NEW_USER = "INSERT INTO uzytkownicy (imie, nazwisko, typ) VALUES (?, ?, ?);";
 
-    public static String INSERT_NEW_USERS = "INSERT INTO uzytkownicy (imie, nazwisko) VALUES (?, ?);";
+    public static String INSERT_NEW_USERS = "INSERT INTO uzytkownicy (imie, nazwisko, typ) VALUES (?, ?, ?);";
 
-    public static String INSERT_NEW_USER_NEXT_SEQ = "insert into uzytkownicy (id, imie, nazwisko) VALUES (nextval('uzytkownicy_id_seq'),?,?);";
+    public static String INSERT_NEW_USER_NEXT_SEQ = "insert into uzytkownicy (id, imie, nazwisko, typ) VALUES (nextval('uzytkownicy_id_seq'),?,?, ?);";
 
     public static String SELECT_NEW_USER_ID = "(SELECT id FROM uzytkownicy where nazwisko=?);";
 
@@ -77,6 +77,6 @@ public class Queries {
     }
 
     public static class DataLoaderQueries {
-        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
+        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
     }
 }

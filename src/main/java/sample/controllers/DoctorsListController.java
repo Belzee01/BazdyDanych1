@@ -52,6 +52,10 @@ public class DoctorsListController implements Initializable{
         backBtn.setOnAction(event -> {
             changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
         });
+
+        addNewBtn.setOnAction(event -> {
+            changeSceneContext(event, getClass().getClassLoader().getResource("forms/doctorsAddForm.fxml"), databaseService);
+        });
     }
 
     private void initializeTableView() {

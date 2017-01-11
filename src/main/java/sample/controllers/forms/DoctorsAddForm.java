@@ -29,22 +29,19 @@ public class DoctorsAddForm extends ParentForm implements Initializable {
     @FXML
     private TextField surnameField;
 
-    @FXML
-    private TextField loginField;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            saveNewAdminInDB(nameField.getText(), surnameField.getText(), loginField.getText());
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            saveNewDoctorInDB(nameField.getText(), surnameField.getText());
+            changeSceneContext(event, getClass().getClassLoader().getResource("doctorsList.fxml"), databaseService);
         });
 
         abortBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
+            changeSceneContext(event, getClass().getClassLoader().getResource("doctorsList.fxml"), databaseService);
         });
     }
 
-    private void saveNewAdminInDB(String name, String surname, String login) {
-        databaseController.insertNewAdmin(name, surname, login);
+    private void saveNewDoctorInDB(String name, String surname) {
+        databaseController.insertNewDoctor(name, surname);
     }
 }

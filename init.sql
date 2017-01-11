@@ -86,6 +86,7 @@ CREATE TABLE uzytkownicy (
   id serial  NOT NULL,
   imie varchar(20)  NOT NULL,
   nazwisko varchar(20)  NOT NULL,
+  typ VARCHAR(20) NOT NULL,
   CONSTRAINT uzytkownicy_pk PRIMARY KEY (id)
 );
 
