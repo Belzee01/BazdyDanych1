@@ -23,6 +23,11 @@ public class ExamineListView {
         this.time = new SimpleIntegerProperty(time);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public Integer getId() {
         return id;
     }
