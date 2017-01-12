@@ -13,6 +13,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+import sample.ContextCatcher;
 import sample.views.CompanyListView;
 import sample.views.ExamineListView;
 
@@ -49,7 +50,19 @@ public class CompanyListController implements Initializable {
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+            switch (ContextCatcher.getAccountType()) {
+                case ADMIN:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+                    break;
+
+                case COMPANY:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    break;
+
+                case STANDARD:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    break;
+            }
         });
 
         addNewBtn.setOnAction(event -> {
@@ -116,6 +129,19 @@ public class CompanyListController implements Initializable {
 
         tableView.setItems(data);
         tableView.getColumns().addAll(name, nip, address, action);
+        switch (ContextCatcher.getAccountType()) {
+            case ADMIN:
+                tableView.getColumns().addAll(name, nip, address, action);
+                break;
+
+            case STANDARD:
+                tableView.getColumns().addAll(name, nip, address);
+                break;
+
+            case COMPANY:
+                tableView.getColumns().addAll(name, nip, address);
+                break;
+        }
     }
 }
 

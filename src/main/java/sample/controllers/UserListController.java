@@ -14,7 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
-import sample.views.PatientListView;
+import sample.ContextCatcher;
 import sample.views.UserListView;
 
 import java.net.URL;
@@ -47,7 +47,19 @@ public class UserListController implements Initializable {
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+            switch (ContextCatcher.getAccountType()) {
+                case ADMIN:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+                    break;
+
+                case COMPANY:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    break;
+
+                case STANDARD:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    break;
+            }
         });
     }
 
@@ -55,6 +67,7 @@ public class UserListController implements Initializable {
         TableColumn<UserListView, String> name = new TableColumn<>("Imie uzytkownika");
         TableColumn<UserListView, String> surname = new TableColumn<>("Nazwisko uzytkownika");
         TableColumn<UserListView, String> login = new TableColumn<>("Login uzytkownika");
+        TableColumn<UserListView, String> type = new TableColumn<>("Typ uzytkownika");
         TableColumn action = new TableColumn("Action");
 
         name.setCellValueFactory(
@@ -68,11 +81,14 @@ public class UserListController implements Initializable {
                 new PropertyValueFactory<>("login")
         );
 
-        action.setCellValueFactory( new PropertyValueFactory<>( "DUMMY" ) );
+        type.setCellValueFactory(
+                new PropertyValueFactory<>("type")
+        );
+
+        action.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
 
         Callback<TableColumn<UserListView, String>, TableCell<UserListView, String>> cellFactory =
-                new Callback<TableColumn<UserListView, String>, TableCell<UserListView, String>>()
-                {
+                new Callback<TableColumn<UserListView, String>, TableCell<UserListView, String>>() {
                     @Override
                     public TableCell<UserListView, String> call(TableColumn<UserListView, String> param) {
                         {
@@ -110,6 +126,6 @@ public class UserListController implements Initializable {
         data = databaseController.selectAllUsers();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, surname, login, action);
+        tableView.getColumns().addAll(name, surname, login, type, action);
     }
 }

@@ -21,7 +21,9 @@
                   <Separator prefWidth="200.0" />
                </graphic>
             </Label>
-            <Separator orientation="VERTICAL" prefHeight="67.0" prefWidth="9.0" />
+            <Separator orientation="VERTICAL" prefHeight="29.0" prefWidth="0.0" />
+            <ComboBox fx:id="typeCombo" prefWidth="150.0" promptText="Typ konta" />
+            <Separator orientation="VERTICAL" prefHeight="44.0" prefWidth="1.0" />
             <TextField fx:id="nameText" promptText="Imię" />
             <Separator orientation="VERTICAL" prefHeight="14.0" prefWidth="0.0" />
             <TextField fx:id="surnameText" promptText="Nazwisko" />
@@ -36,8 +38,6 @@
             <Separator orientation="VERTICAL" prefHeight="11.0" prefWidth="0.0" />
             <PasswordField fx:id="passwordConfirmationText" promptText="Confirm password" />
             <Separator orientation="VERTICAL" prefHeight="28.0" prefWidth="0.0" />
-            <ComboBox prefWidth="150.0" promptText="Typ konta" fx:id="typeCombo"/>
-            <Separator orientation="VERTICAL" prefHeight="47.0" prefWidth="0.0" />
             <HBox prefHeight="39.0" prefWidth="600.0">
                <children>
                   <Button fx:id="submitBtn" mnemonicParsing="false" text="Zarejestruj" />

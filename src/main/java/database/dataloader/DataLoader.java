@@ -7,6 +7,7 @@ import lombok.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +17,6 @@ import static database.Queries.DataLoaderQueries.CLEAN_UP_ALL_TABLES;
 
 @Data
 public class DataLoader {
-    private List<ReportsDTO> reportsDTOS = new ArrayList<>();
-
     DatabaseService databaseService = null;
 
     public DataLoader(DatabaseService databaseService) {
@@ -67,13 +66,32 @@ public class DataLoader {
 
     final PatientDTO[] patientDTOS =
             {
-                    PatientDTO.builder().id(1).name("Imie 1").surname("Nazwisko 1").companyId(1).build(),
-                    PatientDTO.builder().id(2).name("Imie 2").surname("Nazwisko 2").companyId(2).build(),
-                    PatientDTO.builder().id(3).name("Imie 3").surname("Nazwisko 3").companyId(3).build()
+                    PatientDTO.builder().name("Imie 1").surname("Nazwisko 1").companyId(1).build(),
+                    PatientDTO.builder().name("Imie 2").surname("Nazwisko 2").companyId(2).build(),
+                    PatientDTO.builder().name("Imie 3").surname("Nazwisko 3").companyId(3).build()
+            };
+
+    final BadanieDTO[] badanieDTOS =
+            {
+                    BadanieDTO.builder().patientId(1).examineId(1).doctorId(1).build(),
+                    BadanieDTO.builder().patientId(1).examineId(2).doctorId(1).build(),
+                    BadanieDTO.builder().patientId(1).examineId(3).doctorId(1).build()
+            };
+
+    final ReportsDTO[] reportsDTOS =
+            {
+                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(1).build(),
+            };
+
+    final ReportContainerDTO[] reportContainerDTOS =
+            {
+                    ReportContainerDTO.builder().reportId(1).examineId(1).build(),
+                    ReportContainerDTO.builder().reportId(1).examineId(2).build(),
+                    ReportContainerDTO.builder().reportId(1).examineId(3).build()
             };
 
     final String[] sequences = {
-        "uzytkownicy_id_seq", "admini_id_seq", "badania_id_seq", "badanie_id_seq", "firmy_id_seq", "hasla_id_seq", "lekarze_id_seq", "pacjent_id_seq", "raporty_id_seq"
+            "kontener_raportow_id_seq", "uzytkownicy_id_seq", "admini_id_seq", "badania_id_seq", "badanie_id_seq", "firmy_id_seq", "hasla_id_seq", "lekarze_id_seq", "pacjent_id_seq", "raporty_id_seq"
     };
 
     public void cleanUpDatabase() {
@@ -259,6 +277,76 @@ public class DataLoader {
                 preparedStatement.setString(1, p.getName());
                 preparedStatement.setString(2, p.getSurname());
                 preparedStatement.setInt(3, p.getCompanyId());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(badanieDTOS).forEach(p -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_BADANIE);
+
+                preparedStatement.setInt(1, p.getPatientId());
+                preparedStatement.setInt(2, p.getExamineId());
+                preparedStatement.setInt(3, p.getDoctorId());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(reportsDTOS).forEach(p -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_REPORT);
+
+                preparedStatement.setTimestamp(1, p.getData());
+                preparedStatement.setInt(2, p.getFirmId());
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException s) {
+                s.printStackTrace();
+                databaseService.cleanUpConnections();
+            } finally {
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException s) {
+                        s.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        Arrays.stream(reportContainerDTOS).forEach(p -> {
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_REPORT_CONATINER);
+
+                preparedStatement.setInt(1, p.getReportId());
+                preparedStatement.setInt(2, p.getExamineId());
 
                 preparedStatement.executeUpdate();
             } catch (SQLException s) {

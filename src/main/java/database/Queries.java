@@ -12,6 +12,8 @@ public class Queries {
 
     public static String SELECT_USER_ID = "(SELECT id FROM uzytkownicy where imie = ? and nazwisko=?);";
 
+    public static String SELECT_USER_TYPE = "SELECT typ FROM uzytkownicy where id = ?;";
+
     public static String INSERT_NEW_HASLA = "INSERT INTO hasla (login, password, uzytkownicy_id) VALUES (?, ?, ?);";
 
     public static String INSERT_NEW_HASLA_NEXT_SEQ = "INSERT INTO hasla (id, login, password, uzytkownicy_id) VALUES (nextval('hasla_id_seq'), ?, ?, ?);";
@@ -24,13 +26,17 @@ public class Queries {
 
     public static String INSERT_NEW_ADMIN = "INSERT INTO admini (uzytkownicy_id) VALUES(?);";
 
+    public static String INSERT_NEW_REPORT = "INSERT INTO raporty (data, firmy_id) VALUES(?,?);";
+
+    public static String INSERT_NEW_REPORT_CONATINER = "INSERT INTO kontener_raportow (raporty_id, badanie_id) VALUES(?,?);";
+
     public static String UPDATE_ADMIN = "update admini set (uzytkownicy_id) VALUES(?);";
 
     public static String INSERT_NEW_ADMINS = "INSERT INTO admini (uzytkownicy_id) VALUES(?);";
 
     public static String INSERT_NEW_EXAMINES = "INSERT INTO badania (nazwa, cena, czas) VALUES(?, ?, ?);";
 
-    public static String INSERT_NEW_BADANIE = "INSERT INTO badanie (pacjent_id, badania_id, lekarze_id, data) VALUES(?, ?, ?, ?);";
+    public static String INSERT_NEW_BADANIE = "INSERT INTO badanie (pacjent_id, badania_id, lekarze_id, data) VALUES(?, ?, ?, NOW());";
 
     public static String INSERT_NEW_DOCTORS = "INSERT INTO lekarze (imie, nazwisko) VALUES(?, ?);";
 
@@ -66,17 +72,19 @@ public class Queries {
 
         public static String SELECT_USER_NAME_AND_SURNAME_BY_ID = "select imie, nazwisko from uzytkownicy where id = ?;";
         public static String SELECT_HASLA_LOGIN_BY_USER_ID = "select login from hasla where uzytkownicy_id=?;";
+        public static String SELECT_HASLA_USER_ID_BY_LOGIN = "select uzytkownicy_id from hasla where login=?;";
         public static String DELETE_FROM_ADMIN_LIST_BY_USER_ID = "delete from admini where uzytkownicy_id =?;";
         public static String DELETE_FROM_EXAMINE_LIST = "delete from badania where id =?;";
         public static String DELETE_FROM_DOCTORS_LIST = "delete from lekarze where id =?;";
         public static String DELETE_FROM_COMPANY_LIST = "delete from firmy where id =?;";
         public static String DELETE_FROM_PATIENT_LIST = "delete from pacjent where id =?;";
         public static String DELETE_FROM_USER_LIST = "delete from uzytkownicy where id =?;";
+        public static String SELECT_COMPANY_ID_WHERE_NAME_EQUAL_USER_NAME = "select id from firmy where nazwa = (select imie from uzytkownicy where id = ?)";
 
 
     }
 
     public static class DataLoaderQueries {
-        public static final String CLEAN_UP_ALL_TABLES = "delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
+        public static final String CLEAN_UP_ALL_TABLES = "delete from kontener_raportow; delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
     }
 }

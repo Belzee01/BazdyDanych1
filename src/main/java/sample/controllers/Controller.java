@@ -15,11 +15,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
+import sample.ACCOUNT_TYPE;
+import sample.ContextCatcher;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static sample.ACCOUNT_TYPE.*;
 import static sample.controllers.ControllerUtils.changeSceneContext;
 
 public class Controller implements Initializable {
@@ -74,9 +77,18 @@ public class Controller implements Initializable {
             try {
                 databaseController.checkCredentials(loginText.getText(), passwordText.getText());
                 if (databaseController.authenticate(loginText.getText(), passwordText.getText())) {
+                    ContextCatcher.setAccountType(ADMIN);
                     changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
                 } else {
-                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    if (databaseController.checkType(loginText.getText(), passwordText.getText()).equals(STANDARD.toString())) {
+                        ContextCatcher.setAccountType(STANDARD);
+                        changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    } else if(databaseController.checkType(loginText.getText(), passwordText.getText()).equals(COMPANY.toString())){
+                        ContextCatcher.setCompanyId(databaseController.selectCompanyIdFromLogin(loginText.getText()));
+                        logger.info("Company id from context:" + ContextCatcher.getCompanyId());
+                        ContextCatcher.setAccountType(COMPANY);
+                        changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    }
                 }
             } catch (DatabaseException e) {
                 logger.info(e.getMessage());

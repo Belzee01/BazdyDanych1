@@ -13,14 +13,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+import sample.ACCOUNT_TYPE;
+import sample.ContextCatcher;
 import sample.views.ExamineListView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static sample.ACCOUNT_TYPE.COMPANY;
 import static sample.controllers.ControllerUtils.changeSceneContext;
 
-public class ExaminesListController implements Initializable{
+public class ExaminesListController implements Initializable {
     private static Logger logger = Logger.getLogger(ExaminesListController.class);
 
     private DatabaseService databaseService = null;
@@ -48,11 +51,25 @@ public class ExaminesListController implements Initializable{
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+            switch (ContextCatcher.getAccountType()) {
+                case ADMIN:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+                    break;
+
+                case COMPANY:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    break;
+
+                case STANDARD:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    break;
+            }
         });
 
         addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/examineAddForm.fxml"), databaseService);
+            if (!ContextCatcher.getAccountType().equals(COMPANY)) {
+                changeSceneContext(event, getClass().getClassLoader().getResource("forms/examineAddForm.fxml"), databaseService);
+            }
         });
     }
 
@@ -72,11 +89,10 @@ public class ExaminesListController implements Initializable{
                 new PropertyValueFactory<>("time")
         );
 
-        action.setCellValueFactory( new PropertyValueFactory<>( "DUMMY" ) );
+        action.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
 
         Callback<TableColumn<ExamineListView, String>, TableCell<ExamineListView, String>> cellFactory =
-                new Callback<TableColumn<ExamineListView, String>, TableCell<ExamineListView, String>>()
-                {
+                new Callback<TableColumn<ExamineListView, String>, TableCell<ExamineListView, String>>() {
                     @Override
                     public TableCell<ExamineListView, String> call(TableColumn<ExamineListView, String> param) {
                         {
@@ -114,6 +130,18 @@ public class ExaminesListController implements Initializable{
         data = databaseController.selectAllExamines();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, prise, time, action);
+        switch (ContextCatcher.getAccountType()) {
+            case ADMIN:
+                tableView.getColumns().addAll(name, prise, time, action);
+                break;
+
+            case STANDARD:
+                tableView.getColumns().addAll(name, prise, time);
+                break;
+
+            case COMPANY:
+                tableView.getColumns().addAll(name, prise, time);
+                break;
+        }
     }
 }

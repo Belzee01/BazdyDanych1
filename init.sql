@@ -2,6 +2,7 @@ drop view admin_list_view;
 drop view patient_list_view;
 drop view user_view;
 
+DROP TABLE kontener_raportow;
 DROP TABLE admini;
 DROP TABLE badanie;
 DROP TABLE badania;
@@ -34,7 +35,7 @@ CREATE TABLE badanie (
   pacjent_id int  NOT NULL,
   badania_id int  NOT NULL,
   lekarze_id int  NOT NULL,
-  data date  NOT NULL,
+  data timestamp  NOT NULL,
   CONSTRAINT badanie_pk PRIMARY KEY (id)
 );
 
@@ -54,6 +55,14 @@ CREATE TABLE hasla (
   password varchar(20)  NOT NULL,
   uzytkownicy_id int  NOT NULL,
   CONSTRAINT hasla_pk PRIMARY KEY (id)
+);
+
+-- Table: kontener_raportow
+CREATE TABLE kontener_raportow (
+  id serial  NOT NULL,
+  raporty_id int  NOT NULL,
+  badanie_id int  NOT NULL,
+  CONSTRAINT kontener_raportow_pk PRIMARY KEY (id)
 );
 
 -- Table: lekarze
@@ -76,7 +85,7 @@ CREATE TABLE pacjent (
 -- Table: raporty
 CREATE TABLE raporty (
   id serial  NOT NULL,
-  data date  NOT NULL,
+  data timestamp  NOT NULL,
   firmy_id int  NOT NULL,
   CONSTRAINT raporty_pk PRIMARY KEY (id)
 );
@@ -86,7 +95,7 @@ CREATE TABLE uzytkownicy (
   id serial  NOT NULL,
   imie varchar(20)  NOT NULL,
   nazwisko varchar(20)  NOT NULL,
-  typ VARCHAR(20) NOT NULL,
+  typ varchar(20)  NOT NULL,
   CONSTRAINT uzytkownicy_pk PRIMARY KEY (id)
 );
 
@@ -95,7 +104,6 @@ CREATE TABLE uzytkownicy (
 ALTER TABLE admini ADD CONSTRAINT admini_uzytkownicy
 FOREIGN KEY (uzytkownicy_id)
 REFERENCES uzytkownicy (id)
-ON DELETE CASCADE
 NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
@@ -128,7 +136,22 @@ INITIALLY IMMEDIATE
 ALTER TABLE hasla ADD CONSTRAINT hasla_uzytkownicy
 FOREIGN KEY (uzytkownicy_id)
 REFERENCES uzytkownicy (id)
-ON DELETE CASCADE
+NOT DEFERRABLE
+INITIALLY IMMEDIATE
+;
+
+-- Reference: kontener_raportow_badanie (table: kontener_raportow)
+ALTER TABLE kontener_raportow ADD CONSTRAINT kontener_raportow_badanie
+FOREIGN KEY (badanie_id)
+REFERENCES badanie (id)
+NOT DEFERRABLE
+INITIALLY IMMEDIATE
+;
+
+-- Reference: kontener_raportow_raporty (table: kontener_raportow)
+ALTER TABLE kontener_raportow ADD CONSTRAINT kontener_raportow_raporty
+FOREIGN KEY (raporty_id)
+REFERENCES raporty (id)
 NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
@@ -149,10 +172,9 @@ NOT DEFERRABLE
 INITIALLY IMMEDIATE
 ;
 
--- End of file.
 create view admin_list_view as select uzytkownicy.id,hasla.login, uzytkownicy.imie, uzytkownicy.nazwisko from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id where uzytkownicy.id in (select uzytkownicy_id from admini);
 
 CREATE VIEW patient_list_view as select pacjent.id, pacjent.imie, pacjent.nazwisko, firmy.nazwa from pacjent LEFT JOIN firmy ON pacjent.firmy_id = firmy.id;
 
-CREATE VIEW user_view AS select uzytkownicy.id, uzytkownicy.imie, uzytkownicy.nazwisko, hasla.login from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id;
+CREATE VIEW user_view AS select uzytkownicy.id, uzytkownicy.imie, uzytkownicy.nazwisko, hasla.login, uzytkownicy.typ from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id;
 

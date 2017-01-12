@@ -14,12 +14,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+import sample.ACCOUNT_TYPE;
+import sample.ContextCatcher;
 import sample.views.DoctorsListView;
 import sample.views.ExamineListView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static sample.ACCOUNT_TYPE.COMPANY;
 import static sample.controllers.ControllerUtils.changeSceneContext;
 
 public class DoctorsListController implements Initializable{
@@ -50,11 +53,27 @@ public class DoctorsListController implements Initializable{
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+            switch (ContextCatcher.getAccountType()) {
+                case ADMIN:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+                    break;
+
+                case COMPANY:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    break;
+
+                case STANDARD:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    break;
+            }
         });
 
         addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/doctorsAddForm.fxml"), databaseService);
+            if(!ContextCatcher.getAccountType().equals(COMPANY)) {
+                changeSceneContext(event, getClass().getClassLoader().getResource("forms/doctorsAddForm.fxml"), databaseService);
+            } else {
+                addNewBtn.setDisable(true);
+            }
         });
     }
 
@@ -112,7 +131,19 @@ public class DoctorsListController implements Initializable{
         data = databaseController.selectAllDoctors();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, surname, action);
+        switch (ContextCatcher.getAccountType()) {
+            case ADMIN:
+                tableView.getColumns().addAll(name, surname, action);
+                break;
+
+            case STANDARD:
+                tableView.getColumns().addAll(name, surname);
+                break;
+
+            case COMPANY:
+                tableView.getColumns().addAll(name, surname);
+                break;
+        }
     }
 }
 

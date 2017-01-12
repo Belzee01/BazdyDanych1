@@ -57,13 +57,30 @@ public class RegisterController implements Initializable {
         databaseService = new DatabaseService();
         databaseController = new DatabaseController(databaseService);
 
+        typeCombo.setOnAction(event -> {
+            String type = typeCombo.getValue().toString();
+
+            if (type.equals("Company")) {
+                nameText.setPromptText("Nazwa firmy");
+                surnameText.setPromptText("NIP firmy");
+            } else {
+                nameText.setPromptText("Imie");
+                surnameText.setPromptText("Nazwisko");
+            }
+        });
+
         submitBtn.setOnAction((event) -> {
             databaseService.connectToDb();
 
-            String type = ((ACCOUNT_TYPE)typeCombo.getValue()).toString();
-            databaseController.insertNewUser(nameText.getText(), surnameText.getText(), type);
-            databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+            String type = typeCombo.getValue().toString();
 
+            if (type.equals("Company")) {
+                databaseController.insertNewUserAsCompany(nameText.getText(), surnameText.getText(), type);
+                databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+            } else {
+                databaseController.insertNewUser(nameText.getText(), surnameText.getText(), type);
+                databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+            }
             changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
         });
 

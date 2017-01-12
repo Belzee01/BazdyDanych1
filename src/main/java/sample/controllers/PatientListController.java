@@ -13,18 +13,21 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+import sample.ACCOUNT_TYPE;
+import sample.ContextCatcher;
 import sample.views.ExamineListView;
 import sample.views.PatientListView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static sample.ACCOUNT_TYPE.COMPANY;
 import static sample.controllers.ControllerUtils.changeSceneContext;
 
 /**
  * Created by Kajetan on 2016-12-02.
  */
-public class PatientListController implements Initializable{
+public class PatientListController implements Initializable {
     private static Logger logger = Logger.getLogger(PatientListController.class);
 
     private DatabaseService databaseService = null;
@@ -52,11 +55,26 @@ public class PatientListController implements Initializable{
         initializeTableView();
 
         backBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+            logger.info("Account type in application context: " + ContextCatcher.getAccountType());
+            switch (ContextCatcher.getAccountType()) {
+                case ADMIN:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("adminMain.fxml"), databaseService);
+                    break;
+
+                case COMPANY:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("companyMain.fxml"), databaseService);
+                    break;
+
+                case STANDARD:
+                    changeSceneContext(event, getClass().getClassLoader().getResource("userMain.fxml"), databaseService);
+                    break;
+            }
         });
 
         addNewBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("forms/patientAddForm.fxml"), databaseService);
+            if (!ContextCatcher.getAccountType().equals(COMPANY)) {
+                changeSceneContext(event, getClass().getClassLoader().getResource("forms/patientAddForm.fxml"), databaseService);
+            }
         });
     }
 
@@ -76,11 +94,10 @@ public class PatientListController implements Initializable{
                 new PropertyValueFactory<>("company")
         );
 
-        action.setCellValueFactory( new PropertyValueFactory<>( "DUMMY" ) );
+        action.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
 
         Callback<TableColumn<PatientListView, String>, TableCell<PatientListView, String>> cellFactory =
-                new Callback<TableColumn<PatientListView, String>, TableCell<PatientListView, String>>()
-                {
+                new Callback<TableColumn<PatientListView, String>, TableCell<PatientListView, String>>() {
                     @Override
                     public TableCell<PatientListView, String> call(TableColumn<PatientListView, String> param) {
                         {
@@ -118,6 +135,18 @@ public class PatientListController implements Initializable{
         data = databaseController.selectAllPatients();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, surname, company, action);
+        switch (ContextCatcher.getAccountType()) {
+            case ADMIN:
+                tableView.getColumns().addAll(name, surname, company, action);
+                break;
+
+            case STANDARD:
+                tableView.getColumns().addAll(name, surname, company);
+                break;
+
+            case COMPANY:
+                tableView.getColumns().addAll(name, surname, company);
+                break;
+        }
     }
 }

@@ -10,12 +10,22 @@ public class UserListView {
     private SimpleStringProperty name;
     private SimpleStringProperty surname;
     private SimpleStringProperty login;
+    private SimpleStringProperty type;
 
-    public UserListView(Integer id, String name, String surname, String login) {
+    public UserListView(Integer id, String name, String surname, String login, String type) {
         this.id = id;
         this.name = new SimpleStringProperty(name);
         this.surname = new SimpleStringProperty(surname);
         this.login = new SimpleStringProperty(login);
+        this.type = new SimpleStringProperty(type);
+    }
+
+    public SimpleStringProperty typeProperty() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type.set(type);
     }
 
     public SimpleStringProperty loginProperty() {

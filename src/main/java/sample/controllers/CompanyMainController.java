@@ -10,16 +10,13 @@ import java.util.ResourceBundle;
 
 import static sample.controllers.ControllerUtils.changeSceneContext;
 
-public class UserMainController implements Initializable{
+public class CompanyMainController implements Initializable{
+
+    @FXML
+    public Button reportsBtn;
 
     @FXML
     public Button examinesBtn;
-
-    @FXML
-    public Button pacientsBtn;
-
-    @FXML
-    public Button comapniesBtn;
 
     @FXML
     public Button doctorsBtn;
@@ -33,20 +30,16 @@ public class UserMainController implements Initializable{
             Platform.exit();
         });
 
-        comapniesBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("companyList.fxml"));
-        });
-
         doctorsBtn.setOnAction(event -> {
             changeSceneContext(event, getClass().getClassLoader().getResource("doctorsList.fxml"));
         });
 
-        pacientsBtn.setOnAction(event -> {
-            changeSceneContext(event, getClass().getClassLoader().getResource("patientList.fxml"));
-        });
-
         examinesBtn.setOnAction(event -> {
             changeSceneContext(event, getClass().getClassLoader().getResource("examinesList.fxml"));
+        });
+
+        reportsBtn.setOnAction(event -> {
+
         });
     }
 }

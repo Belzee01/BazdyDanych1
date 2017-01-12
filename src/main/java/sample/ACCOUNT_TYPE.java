@@ -5,6 +5,7 @@ package sample;
  */
 public enum ACCOUNT_TYPE {
     STANDARD("Standard"),
+    ADMIN("Admin"),
     COMPANY("Company");
 
     private final String type;

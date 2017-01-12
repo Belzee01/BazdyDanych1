@@ -7,11 +7,9 @@ import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
 import sample.views.*;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static database.Queries.AdminUser.*;
@@ -51,6 +49,51 @@ public class DatabaseController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public void insertNewUserAsCompany(String name, String surname, String type) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            databaseService.getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_COMAPNY_ID);
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next())
+                throw new DatabaseException("Firma o podanych danych nie istnieje!");
+
+            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_USER);
+
+            logger.info("Executing insertNewUser");
+
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, type);
+
+            preparedStatement.executeUpdate();
+
+            logger.info("New user inserted");
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                databaseService.getConnection().setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -96,10 +139,10 @@ public class DatabaseController {
         }
     }
 
-    public Integer selectNewUserId(String surname) {
+    public Integer selectNewUserId(String surname) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        String userId = null;
+        Integer userId = null;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(SELECT_NEW_USER_ID);
 
@@ -109,13 +152,13 @@ public class DatabaseController {
 
             try {
                 while (resultSet.next()) {
-                    userId = resultSet.getString("id");
+                    userId = resultSet.getInt("id");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new DatabaseException("Nie utworzono uzytkownika, blad krytyczny!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
@@ -126,27 +169,28 @@ public class DatabaseController {
                 }
             }
         }
-        if (resultSet == null) {
-            logger.info("ResultSet null");
-            return null;
-        }
-
-        assert userId != null;
-        return Integer.valueOf(userId);
+        return userId;
     }
 
     public void insertNewCredentials(String login, String password, String selector) {
         PreparedStatement preparedStatement = null;
+        Integer userId = null;
+        databaseService.setAutoCommit(false);
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_HASLA);
 
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
-            preparedStatement.setInt(3, selectNewUserId(selector));
+            userId = selectNewUserId(selector);
+
+            if (userId == null)
+                throw new DatabaseException("Nie znalezniono uzytkownika");
+
+            preparedStatement.setInt(3, userId);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
@@ -156,6 +200,7 @@ public class DatabaseController {
                     e.printStackTrace();
                 }
             }
+            databaseService.setAutoCommit(true);
         }
     }
 
@@ -223,6 +268,46 @@ public class DatabaseController {
         }
 
         return authen;
+    }
+
+    public String checkType(String login, String password) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Integer userId = null;
+        boolean authen = false;
+        String accountType = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_GIVEN_CREDENTIALS);
+
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userId = resultSet.getInt("uzytkownicy_id");
+            }
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_TYPE);
+            preparedStatement.setInt(1, userId);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                accountType = resultSet.getString("typ");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return accountType;
     }
 
     public ObservableList<AdminListView> selectAllAdmins() {
@@ -496,7 +581,8 @@ public class DatabaseController {
                                 resultSet.getInt("id"),
                                 resultSet.getString("imie"),
                                 resultSet.getString("nazwisko"),
-                                resultSet.getString("login")
+                                resultSet.getString("login"),
+                                resultSet.getString("typ")
                         )
                 );
             }
@@ -656,14 +742,13 @@ public class DatabaseController {
                 PreparedStatement p = null;
                 ResultSet r = null;
                 try {
-                    if(finalPatientId == null || finalDoctorId == null) {
+                    if (finalPatientId == null || finalDoctorId == null) {
                         throw new DatabaseException("Crashed!");
                     }
                     p = databaseService.getConnection().prepareStatement(INSERT_NEW_BADANIE);
                     p.setInt(1, finalPatientId);
                     p.setInt(2, e.getId());
                     p.setInt(3, finalDoctorId);
-                    p.setDate(4, Date.valueOf(LocalDate.now()));
                     p.executeUpdate();
                     logger.info("Wprowadzono nowe badanie");
                 } catch (SQLException e1) {
@@ -757,5 +842,40 @@ public class DatabaseController {
                 }
             }
         }
+    }
+
+    public Integer selectCompanyIdFromLogin(String name) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Integer companyId = null;
+        Integer userId = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_HASLA_USER_ID_BY_LOGIN);
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                userId = resultSet.getInt("uzytkownicy_id");
+            }
+
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_COMPANY_ID_WHERE_NAME_EQUAL_USER_NAME);
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                companyId = resultSet.getInt("id");
+            }
+        } catch (DatabaseException d) {
+            logger.info(d.getMessage());
+        } catch (SQLException e) {
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return companyId;
     }
 }

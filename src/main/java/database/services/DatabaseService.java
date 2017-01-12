@@ -22,6 +22,14 @@ public class DatabaseService {
         properties = loadProperties();
     }
 
+    public void setAutoCommit(boolean commit) {
+        try {
+            this.connection.setAutoCommit(commit);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Properties loadProperties() {
         Properties properties = new Properties();
         InputStream stream = null;
