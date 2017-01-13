@@ -39,7 +39,7 @@ public class CompanyMainController implements Initializable{
         });
 
         reportsBtn.setOnAction(event -> {
-
+            changeSceneContext(event, getClass().getClassLoader().getResource("reportsMain.fxml"));
         });
     }
 }

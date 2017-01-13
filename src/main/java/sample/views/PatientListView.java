@@ -18,6 +18,11 @@ public class PatientListView {
         this.company = new SimpleStringProperty(company);
     }
 
+    public PatientListView(String name, String surname) {
+        this.name = new SimpleStringProperty(name);
+        this.surname = new SimpleStringProperty(surname);
+    }
+
     public Integer getId() {
         return id;
     }

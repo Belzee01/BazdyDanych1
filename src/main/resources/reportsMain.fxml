@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -15,7 +17,11 @@
                 <HBox prefHeight="29.0" prefWidth="600.0">
                     <children>
                         <Button fx:id="addNewBtn" mnemonicParsing="false" text="Generuj nowy raport" />
-                        <Separator prefHeight="1.0" prefWidth="393.0" />
+                  <Separator prefHeight="3.0" prefWidth="42.0" />
+                  <Label text="Suma za badania" />
+                  <Separator prefHeight="9.0" prefWidth="15.0" />
+                  <TextField fx:id="sumField"/>
+                        <Separator prefHeight="3.0" prefWidth="104.0" />
                         <Button fx:id="backBtn" mnemonicParsing="false" text="Wróć" />
                     </children>
                 </HBox>

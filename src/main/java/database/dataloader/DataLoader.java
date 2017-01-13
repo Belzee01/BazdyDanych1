@@ -75,19 +75,24 @@ public class DataLoader {
             {
                     BadanieDTO.builder().patientId(1).examineId(1).doctorId(1).build(),
                     BadanieDTO.builder().patientId(1).examineId(2).doctorId(1).build(),
+                    BadanieDTO.builder().patientId(2).examineId(2).doctorId(1).build(),
+                    BadanieDTO.builder().patientId(2).examineId(3).doctorId(1).build(),
                     BadanieDTO.builder().patientId(1).examineId(3).doctorId(1).build()
             };
 
     final ReportsDTO[] reportsDTOS =
             {
                     ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(1).build(),
+                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(2).build()
             };
 
     final ReportContainerDTO[] reportContainerDTOS =
             {
                     ReportContainerDTO.builder().reportId(1).examineId(1).build(),
                     ReportContainerDTO.builder().reportId(1).examineId(2).build(),
-                    ReportContainerDTO.builder().reportId(1).examineId(3).build()
+                    ReportContainerDTO.builder().reportId(1).examineId(3).build(),
+                    ReportContainerDTO.builder().reportId(2).examineId(2).build(),
+                    ReportContainerDTO.builder().reportId(2).examineId(3).build()
             };
 
     final String[] sequences = {

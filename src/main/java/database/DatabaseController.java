@@ -547,6 +547,115 @@ public class DatabaseController {
         return data;
     }
 
+    public ObservableList<PatientListView> selectAllPatientsForCompany(Integer companyId) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<PatientListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_PACIENT_FOR_COMPANY);
+            preparedStatement.setInt(1, companyId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                data.add(
+                        new PatientListView(
+                                resultSet.getString("imie"),
+                                resultSet.getString("nazwisko")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public ObservableList<ReportListView> selectAllReports(Integer companyId) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<ReportListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_REPORTS_FOR_COMPANY);
+            preparedStatement.setInt(1, companyId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                data.add(
+                        new ReportListView(
+                                resultSet.getInt("id"),
+                                resultSet.getTimestamp("data"),
+                                resultSet.getInt("firmy_id")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
+    public Integer selectSumForCompany(Integer companyId) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Integer sum = 0;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_SUM_FOR_PATIENTS_COMPANY);
+            preparedStatement.setInt(1, companyId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                sum = resultSet.getInt("sum");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return sum;
+    }
+
+    public void saveNewReportInDB(Integer companyId) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(AdminUser.INSERT_NEW_REPORT);
+            preparedStatement.setInt(1, companyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void deleteFromPatientList(int patientId) {
         PreparedStatement preparedStatement = null;
         try {
@@ -853,7 +962,7 @@ public class DatabaseController {
             preparedStatement = databaseService.getConnection().prepareStatement(SELECT_HASLA_USER_ID_BY_LOGIN);
             preparedStatement.setString(1, name);
             resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 userId = resultSet.getInt("uzytkownicy_id");
             }
 

@@ -48,6 +48,8 @@ public class Queries {
 
     public static String SELECT_COMAPNY_ID = "select id from firmy where nazwa=?;";
 
+    public static String SELECT_BADANIA_BY_COMPANY_ID = "select * from badanie where pacjent_id in (select pacjent.id from pacjent where firmy_id in (select firmy.id from raporty Left JOIN firmy ON raporty.firmy_id = ?));";
+
     public static class StandardUser {
 
     }
@@ -60,6 +62,10 @@ public class Queries {
         public static String SELECT_ALL_DOCTORS = "select * from lekarze";
         public static String SELECT_DOCTOR_ID = "select id from lekarze where imie=? and nazwisko=?";
         public static String SELECT_ALL_REPORTS = "select * from raporty;";
+
+        public static String SELECT_ALL_REPORTS_FOR_COMPANY = "select * from raporty where firmy_id = ?;";
+
+
         public static String SELECT_ALL_USERS = "select * from uzytkownicy;";
 
 
@@ -67,8 +73,13 @@ public class Queries {
 
         public static String SELECT_ALL_PACIENT_VIEW = "select * from patient_list_view;";
 
+        public static String SELECT_ALL_PACIENT_FOR_COMPANY = "select imie, nazwisko from pacjent where firmy_id = ?;";
+
         public static String SELECT_ALL_USERS_VIEW = "select * from user_view;";
 
+        public static String SELECT_SUM_FOR_PATIENTS_COMPANY = "select sum(cena) from badania where id in (select badania_id from badanie where pacjent_id in (select id from pacjent where firmy_id = ?));";
+
+        public static String INSERT_NEW_REPORT = "insert into raporty (data, firmy_id) VALUES (current_timestamp, ?);";
 
         public static String SELECT_USER_NAME_AND_SURNAME_BY_ID = "select imie, nazwisko from uzytkownicy where id = ?;";
         public static String SELECT_HASLA_LOGIN_BY_USER_ID = "select login from hasla where uzytkownicy_id=?;";
@@ -85,6 +96,6 @@ public class Queries {
     }
 
     public static class DataLoaderQueries {
-        public static final String CLEAN_UP_ALL_TABLES = "delete from kontener_raportow; delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
+        public static final String CLEAN_UP_ALL_TABLES = "delete from kontener_raportow; delete from raporty; delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
     }
 }

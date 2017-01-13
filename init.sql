@@ -2,6 +2,7 @@ drop view admin_list_view;
 drop view patient_list_view;
 drop view user_view;
 
+drop TRIGGER raporty_trigger ON raporty;
 DROP TABLE kontener_raportow;
 DROP TABLE admini;
 DROP TABLE badanie;
@@ -177,4 +178,19 @@ create view admin_list_view as select uzytkownicy.id,hasla.login, uzytkownicy.im
 CREATE VIEW patient_list_view as select pacjent.id, pacjent.imie, pacjent.nazwisko, firmy.nazwa from pacjent LEFT JOIN firmy ON pacjent.firmy_id = firmy.id;
 
 CREATE VIEW user_view AS select uzytkownicy.id, uzytkownicy.imie, uzytkownicy.nazwisko, hasla.login, uzytkownicy.typ from uzytkownicy FULL JOIN hasla ON uzytkownicy.id = hasla.uzytkownicy_id;
+
+CREATE OR REPLACE FUNCTION getBadanieId() RETURNS TRIGGER AS $example_table$
+DECLARE
+  bId RECORD;
+BEGIN
+  FOR bId IN (select * from badanie where pacjent_id in (select id from pacjent where firmy_id = new.firmy_id)) LOOP
+    INSERT into kontener_raportow (raporty_id, badanie_id)  VALUES (new.id, bId.id);
+  END LOOP;
+  RETURN NEW;
+END;
+$example_table$ LANGUAGE plpgsql;
+
+CREATE TRIGGER raporty_trigger AFTER INSERT ON raporty
+FOR EACH ROW EXECUTE PROCEDURE getBadanieId();
+
 

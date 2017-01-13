@@ -2,19 +2,19 @@ package sample.controllers;
 
 import database.DatabaseController;
 import database.services.DatabaseService;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
 import sample.ContextCatcher;
 import sample.views.AdminListView;
+import sample.views.PatientListView;
+import sample.views.ReportListView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,7 +38,10 @@ public class ReportController implements Initializable {
     @FXML
     private Button backBtn;
 
-    private ObservableList<AdminListView> data = null;
+    @FXML
+    private TextField sumField;
+
+    private ObservableList<ReportListView> data = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -46,8 +49,6 @@ public class ReportController implements Initializable {
         databaseController = new DatabaseController(databaseService);
 
         databaseService.connectToDb();
-
-        initializeTableView();
 
         backBtn.setOnAction(event -> {
             switch (ContextCatcher.getAccountType()) {
@@ -65,67 +66,46 @@ public class ReportController implements Initializable {
             }
         });
 
+        if(ContextCatcher.getCompanyId() == null) {
+            sumField.setText("0");
+        } else {
+            sumField.setText(String.valueOf(databaseController.selectSumForCompany(ContextCatcher.getCompanyId())));
+        }
+
+        if(ContextCatcher.getCompanyId() == null)
+            addNewBtn.setDisable(true);
+        else
+            addNewBtn.setDisable(false);
+
         addNewBtn.setOnAction(event -> {
+            if(ContextCatcher.getCompanyId() != null) {
+                databaseController.saveNewReportInDB(ContextCatcher.getCompanyId());
+                data = databaseController.selectAllReports(ContextCatcher.getCompanyId());
+                tableView.setItems(data);
+            }
         });
+
+        initializeTableView();
     }
 
     private void initializeTableView() {
-        TableColumn login = new TableColumn("Login");
-        TableColumn name = new TableColumn("Name");
-        TableColumn surname = new TableColumn("Surname");
-        TableColumn action = new TableColumn("Action");
+        TableColumn name = new TableColumn("Numer raportu");
+        TableColumn surname = new TableColumn("Data");
 
-        login.setCellValueFactory(
-                new PropertyValueFactory<AdminListView, String>("login")
-        );
         name.setCellValueFactory(
-                new PropertyValueFactory<AdminListView, String>("name")
+                new PropertyValueFactory<ReportListView, String>("id")
         );
         surname.setCellValueFactory(
-                new PropertyValueFactory<AdminListView, String>("surname")
+                new PropertyValueFactory<ReportListView, String>("data")
         );
 
-        action.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
-
-        Callback<TableColumn<AdminListView, String>, TableCell<AdminListView, String>> cellFactory =
-                new Callback<TableColumn<AdminListView, String>, TableCell<AdminListView, String>>() {
-                    @Override
-                    public TableCell<AdminListView, String> call(TableColumn<AdminListView, String> param) {
-                        {
-                            final TableCell<AdminListView, String> cell = new TableCell<AdminListView, String>() {
-
-                                final Button btn = new Button("Remove");
-
-                                @Override
-                                public void updateItem(String item, boolean empty) {
-                                    super.updateItem(item, empty);
-                                    if (empty) {
-                                        setGraphic(null);
-                                        setText(null);
-                                    } else {
-                                        btn.setOnAction((ActionEvent event) ->
-                                        {
-                                            AdminListView person = getTableView().getItems().get(getIndex());
-
-                                            databaseController.deleteFromAdminList(person.getId());
-
-                                            data.remove(getIndex());
-                                        });
-                                        setGraphic(btn);
-                                        setText(null);
-                                    }
-                                }
-                            };
-                            return cell;
-                        }
-                    }
-                };
-
-        action.setCellFactory(cellFactory);
-
-        data = databaseController.selectAllAdmins();
+        if(ContextCatcher.getCompanyId() != null) {
+           data = databaseController.selectAllReports(ContextCatcher.getCompanyId());
+        } else {
+            data = FXCollections.observableArrayList();
+        }
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(login, name, surname, action);
+        tableView.getColumns().addAll(name, surname);
     }
 }
