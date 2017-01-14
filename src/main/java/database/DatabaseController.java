@@ -4,7 +4,9 @@ import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import org.apache.log4j.Logger;
+import sample.controllers.forms.ErrorForm;
 import sample.views.*;
 
 import java.sql.*;
@@ -25,7 +27,7 @@ public class DatabaseController {
         this.databaseService = databaseService;
     }
 
-    public void insertNewUser(String name, String surname, String type) {
+    public void insertNewUser(String name, String surname, String type) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_USER);
@@ -42,6 +44,7 @@ public class DatabaseController {
         } catch (SQLException e) {
             e.printStackTrace();
             databaseService.cleanUpConnections();
+            throw new DatabaseException(e.getMessage());
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -92,7 +95,7 @@ public class DatabaseController {
         return data;
     }
 
-    public void insertNewUserAsCompany(String name, String surname, String type) {
+    public void insertNewUserAsCompany(String name, String surname, String type) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -120,7 +123,11 @@ public class DatabaseController {
             logger.info("New user inserted");
         } catch (SQLException e) {
             logger.info(e.getMessage());
+
+            ErrorForm.showError("Error", e.getMessage());
+
             databaseService.cleanUpConnections();
+            throw new DatabaseException(e.getMessage());
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -230,6 +237,9 @@ public class DatabaseController {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.info(e.getMessage());
+
+            ErrorForm.showError("Constraint Error", e.getMessage());
+
             databaseService.cleanUpConnections();
         } finally {
             if (preparedStatement != null) {
@@ -269,6 +279,33 @@ public class DatabaseController {
         }
         if (!authen)
             throw new DatabaseException("ERROR - Niepoprawny uzytkownik");
+    }
+
+    public void checkCredentials(String login) throws DatabaseException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean authen = false;
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_GIVEN_CREDENTIALS_BY_LOGIN);
+
+            preparedStatement.setString(1, login);
+
+            resultSet = preparedStatement.executeQuery();
+            authen = resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (authen)
+            throw new DatabaseException("ERROR - Uzytkownik juz istnieje");
     }
 
     public boolean authenticate(String login, String password) {
@@ -533,8 +570,9 @@ public class DatabaseController {
         return data;
     }
 
-    public void deleteFromCompanyList(int companyId) {
+    public void deleteFromCompanyList(int companyId) throws DatabaseException {
         PreparedStatement preparedStatement = null;
+        databaseService.setAutoCommit(false);
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_COMPANY_LIST);
             preparedStatement.setInt(1, companyId);
@@ -542,6 +580,7 @@ public class DatabaseController {
         } catch (SQLException e) {
             logger.info("Nie można usunąć firmy jeżeli są dla niej zarejestrowni pacjenci");
             databaseService.cleanUpConnections();
+            throw new DatabaseException("Nie można usunąć firmy jeżeli są dla niej zarejestrowni pacjenci");
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -550,6 +589,7 @@ public class DatabaseController {
                     e.printStackTrace();
                 }
             }
+            databaseService.setAutoCommit(true);
         }
     }
 
@@ -840,9 +880,10 @@ public class DatabaseController {
         }
     }
 
-    public void insertPatient(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) {
+    public void insertPatient(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        databaseService.setAutoCommit(false);
         try {
             Integer companyId = null;
             preparedStatement = databaseService.getConnection().prepareStatement(SELECT_COMAPNY_ID);
@@ -857,6 +898,8 @@ public class DatabaseController {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_PATIENT);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
+            if(companyId == null)
+                throw new DatabaseException("Nie poprawna nazwa firmy!");
             preparedStatement.setInt(3, companyId);
             preparedStatement.executeUpdate();
 
@@ -904,10 +947,9 @@ public class DatabaseController {
                     e1.printStackTrace();
                 }
             });
-        } catch (DatabaseException d) {
-            logger.info(d.getMessage());
         } catch (SQLException e) {
             databaseService.cleanUpConnections();
+            throw new DatabaseException(e.getMessage());
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -916,6 +958,7 @@ public class DatabaseController {
                     e.printStackTrace();
                 }
             }
+            databaseService.setAutoCommit(true);
         }
     }
 
@@ -968,9 +1011,10 @@ public class DatabaseController {
         }
     }
 
-    public void insertNewCompany(String name, String nip, String adres) {
+    public void insertNewCompany(String name, String nip, String adres) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        databaseService.setAutoCommit(false);
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_COMPANY);
             preparedStatement.setString(1, name);
@@ -978,10 +1022,9 @@ public class DatabaseController {
             preparedStatement.setString(3, adres);
 
             preparedStatement.executeUpdate();
-        } catch (DatabaseException d) {
-            logger.info(d.getMessage());
         } catch (SQLException e) {
             databaseService.cleanUpConnections();
+            throw new DatabaseException(e.getMessage());
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -990,6 +1033,7 @@ public class DatabaseController {
                     e.printStackTrace();
                 }
             }
+            databaseService.setAutoCommit(true);
         }
     }
 

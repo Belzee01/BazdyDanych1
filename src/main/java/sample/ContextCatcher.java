@@ -10,6 +10,8 @@ public class ContextCatcher {
 
     static Integer reportId = null;
 
+    static Boolean error = false;
+
     public static void setAccountType(ACCOUNT_TYPE type) {
         account_type = type;
     }
@@ -32,5 +34,13 @@ public class ContextCatcher {
 
     public static void setReportId(Integer reportId) {
         ContextCatcher.reportId = reportId;
+    }
+
+    public static Boolean getError() {
+        return error;
+    }
+
+    public static void setError(Boolean error) {
+        ContextCatcher.error = error;
     }
 }

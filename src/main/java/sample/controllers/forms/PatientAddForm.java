@@ -1,6 +1,7 @@
 package sample.controllers.forms;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,6 +61,10 @@ public class PatientAddForm extends ParentForm implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
+            if (nameField.getText().equals("") || surnameField.getText().equals("") || doctorCombo.getSelectionModel().getSelectedIndex()==-1 || examineTable.getItems().isEmpty()) {
+                ErrorForm.showError("Error", "Nie wypelniono wszystkich pól");
+                return;
+            }
             saveNewpatientInDB(nameField.getText(), surnameField.getText(), companyField.getText(), (DoctorsListView) doctorCombo.getValue(), data);
             changeSceneContext(event, getClass().getClassLoader().getResource("patientList.fxml"), databaseService);
         });
@@ -81,7 +86,11 @@ public class PatientAddForm extends ParentForm implements Initializable {
     }
 
     private void saveNewpatientInDB(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) {
-        databaseController.insertPatient(name, surname, company, doctor, examines);
+        try {
+            databaseController.insertPatient(name, surname, company, doctor, examines);
+        } catch (DatabaseException e) {
+            ErrorForm.showError("Error", e.getMessage());
+        }
     }
 
     private void initializeComboBox() {

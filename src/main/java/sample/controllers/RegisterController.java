@@ -1,6 +1,7 @@
 package sample.controllers;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.apache.log4j.Logger;
 import sample.ACCOUNT_TYPE;
+import sample.controllers.forms.ErrorForm;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -69,17 +71,38 @@ public class RegisterController implements Initializable {
             }
         });
 
+        /*
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+alert.setTitle("Information Dialog");
+alert.setHeaderText(null);
+alert.setContentText("I have a great message for you!");
+
+alert.showAndWait();
+         */
+
         submitBtn.setOnAction((event) -> {
             databaseService.connectToDb();
 
             String type = typeCombo.getValue().toString();
 
             if (type.equals("Company")) {
-                databaseController.insertNewUserAsCompany(nameText.getText(), surnameText.getText(), type);
-                databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+                try {
+                    databaseController.checkCredentials(loginText.getText());
+                    databaseController.insertNewUserAsCompany(nameText.getText(), surnameText.getText(), type);
+                    databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+                } catch (DatabaseException e) {
+                    ErrorForm.showError("Error", e.getMessage());
+                    e.printStackTrace();
+                }
             } else {
-                databaseController.insertNewUser(nameText.getText(), surnameText.getText(), type);
-                databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+                try {
+                    databaseController.checkCredentials(loginText.getText());
+                    databaseController.insertNewUser(nameText.getText(), surnameText.getText(), type);
+                    databaseController.insertNewCredentials(loginText.getText(), passwordText.getText(), surnameText.getText());
+                } catch (DatabaseException e) {
+                    ErrorForm.showError("Error", e.getMessage());
+                }
             }
             changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"), databaseService);
         });

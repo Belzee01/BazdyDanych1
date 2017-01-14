@@ -22,6 +22,8 @@ public class Queries {
 
     public static String SELECT_GIVEN_CREDENTIALS = "select * from hasla where login=? and password=?;";
 
+    public static String SELECT_GIVEN_CREDENTIALS_BY_LOGIN = "select * from hasla where login=?;";
+
     public static String SELECT_ADMIN = "select * from admini where uzytkownicy_id=?;";
 
     public static String INSERT_NEW_ADMIN = "INSERT INTO admini (uzytkownicy_id) VALUES(?);";

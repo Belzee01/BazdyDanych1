@@ -1,6 +1,7 @@
 package sample.controllers;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
 import sample.ContextCatcher;
+import sample.controllers.forms.ErrorForm;
 import sample.views.CompanyListView;
 import sample.views.ExamineListView;
 
@@ -109,9 +111,12 @@ public class CompanyListController implements Initializable {
                                         {
                                             CompanyListView company = getTableView().getItems().get(getIndex());
 
-                                            databaseController.deleteFromCompanyList(company.getId());
-
-                                            data.remove(getIndex());
+                                            try {
+                                                databaseController.deleteFromCompanyList(company.getId());
+                                                data.remove(getIndex());
+                                            } catch (DatabaseException e) {
+                                                ErrorForm.showError("Error", e.getMessage());
+                                            }
                                         });
                                         setGraphic(btn);
                                         setText(null);
@@ -128,7 +133,6 @@ public class CompanyListController implements Initializable {
         data = databaseController.selectAllCompanies();
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, nip, address, action);
         switch (ContextCatcher.getAccountType()) {
             case ADMIN:
                 tableView.getColumns().addAll(name, nip, address, action);

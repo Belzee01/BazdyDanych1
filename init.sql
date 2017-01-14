@@ -3,6 +3,7 @@ drop view patient_list_view;
 drop view user_view;
 
 drop TRIGGER raporty_trigger ON raporty;
+drop TRIGGER credentials_trigger ON hasla;
 DROP TABLE kontener_raportow;
 DROP TABLE admini;
 DROP TABLE badanie;
@@ -201,5 +202,24 @@ $example_table$ LANGUAGE plpgsql;
 
 CREATE TRIGGER raporty_trigger AFTER INSERT ON raporty
 FOR ROW EXECUTE PROCEDURE getBadanieId();
+
+CREATE TRIGGER raporty_trigger AFTER INSERT ON raporty
+FOR ROW EXECUTE PROCEDURE getBadanieId();
+
+CREATE OR REPLACE FUNCTION checkCredentials() RETURNS TRIGGER AS $example_table$
+DECLARE
+  bId RECORD;
+  checkDate INTEGER;
+BEGIN
+  SELECT INTO bId * from hasla where login=new.login;
+  IF bId.id IS NOT NULL THEN
+    RAISE 'Login : % exists', new.login;
+  END IF;
+  RETURN NEW;
+END;
+$example_table$ LANGUAGE plpgsql;
+
+CREATE TRIGGER credentials_trigger BEFORE INSERT ON hasla
+FOR ROW EXECUTE PROCEDURE checkCredentials();
 
 

@@ -1,6 +1,7 @@
 package sample.controllers.forms;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,6 +46,10 @@ public class CompanyAddForm extends ParentForm implements Initializable {
     }
 
     private void saveNewCompanyInDB(String name, String surname, String login) {
-        databaseController.insertNewCompany(name, surname, login);
+        try {
+            databaseController.insertNewCompany(name, surname, login);
+        } catch (DatabaseException e) {
+            ErrorForm.showError("Error", e.getMessage());
+        }
     }
 }
