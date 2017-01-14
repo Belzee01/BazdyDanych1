@@ -35,11 +35,11 @@ public class DatabaseController {
     }
 
     /**
-     *
-     * @param name
-     * @param surname
-     * @param type
-     * @throws DatabaseException
+     * Inserts new user to database
+     * @param name Name of user that we want to save in DB
+     * @param surname Surname of user
+     * @param type Type of user. Allows Standard or Company
+     * @throws DatabaseException Invalid data causes exception to be thrown
      */
     public void insertNewUser(String name, String surname, String type) throws DatabaseException {
         PreparedStatement preparedStatement = null;
@@ -70,6 +70,12 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Retrieves all patients related to generated report based on reportId and comapnyId
+     * @param companyId Identifies company that patients will be selected for
+     * @param reportId Identifies report that all examines are related to
+     * @return Gets list of patients with examine name and prise
+     */
     public ObservableList<ReportCompanyListView> selectPatientsForReport(Integer companyId, Integer reportId) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -110,6 +116,13 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Inserts new user with Company type
+     * @param name Company name
+     * @param surname Company nip
+     * @param type Company type
+     * @throws DatabaseException Trying to insert duplicate data causes exception
+     */
     public void insertNewUserAsCompany(String name, String surname, String type) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -159,47 +172,12 @@ public class DatabaseController {
         }
     }
 
-    public void insertNewUser(String name, String surname, String login, String password) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_USER_NEXT_SEQ);
-
-            logger.info("Executing insertNewUser");
-
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-
-            preparedStatement.executeUpdate();
-
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_ID);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-
-            resultSet = preparedStatement.executeQuery();
-
-            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_HASLA_NEXT_SEQ);
-
-            while (resultSet.next()) {
-                preparedStatement.setString(1, login);
-                preparedStatement.setString(2, password);
-                preparedStatement.setInt(3, resultSet.getInt("id"));
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            databaseService.cleanUpConnections();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
+    /**
+     * Retries newly created user identifier
+     * @param surname Surname of searched user
+     * @return Returns user identifier
+     * @throws DatabaseException If user based on surname not found exception thrown
+     */
     public Integer selectNewUserId(String surname) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -233,6 +211,12 @@ public class DatabaseController {
         return userId;
     }
 
+    /**
+     * Inserts new record to hasla table
+     * @param login Login for newly created user
+     * @param password Password for newly created user
+     * @param selector newly created user identifier
+     */
     public void insertNewCredentials(String login, String password, String selector) {
         PreparedStatement preparedStatement = null;
         Integer userId = null;
@@ -268,6 +252,12 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Checks if given user exists
+     * @param login User login
+     * @param password user password
+     * @throws DatabaseException If user with given credentials does not exists then exception is thrown
+     */
     public void checkCredentials(String login, String password) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -296,6 +286,11 @@ public class DatabaseController {
             throw new DatabaseException("ERROR - Niepoprawny uzytkownik");
     }
 
+    /**
+     * Checks if user exists based on login
+     * @param login User login
+     * @throws DatabaseException If user already exists then exception is thrown
+     */
     public void checkCredentials(String login) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -323,6 +318,12 @@ public class DatabaseController {
             throw new DatabaseException("ERROR - Uzytkownik juz istnieje");
     }
 
+    /**
+     * Checks if user is admin
+     * @param login User login
+     * @param password user password
+     * @return If user is on admin list then it will return true, otherwise user is non admin user and false is retrieved
+     */
     public boolean authenticate(String login, String password) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -361,6 +362,12 @@ public class DatabaseController {
         return authen;
     }
 
+    /**
+     * Checks account type based on login and password
+     * @param login User login
+     * @param password User password
+     * @return Gets account type as String
+     */
     public String checkType(String login, String password) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -401,6 +408,10 @@ public class DatabaseController {
         return accountType;
     }
 
+    /**
+     * Retrieves all admins
+     * @return Admin list filled with AdminListView instances
+     */
     public ObservableList<AdminListView> selectAllAdmins() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -427,6 +438,10 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Removes given admin from admini table
+     * @param adminId Admin identifier - record is removed based on that parameter
+     */
     public void deleteFromAdminList(int adminId) {
         PreparedStatement preparedStatement = null;
         try {
@@ -447,6 +462,10 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Retrieves all examines from badania table
+     * @return Examine list filled with ExamineListView instances
+     */
     public ObservableList<ExamineListView> selectAllExamines() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
