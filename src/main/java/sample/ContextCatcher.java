@@ -8,6 +8,8 @@ public class ContextCatcher {
 
     static Integer companyId = null;
 
+    static Integer reportId = null;
+
     public static void setAccountType(ACCOUNT_TYPE type) {
         account_type = type;
     }
@@ -22,5 +24,13 @@ public class ContextCatcher {
 
     public static void setCompanyId(Integer companyId) {
         ContextCatcher.companyId = companyId;
+    }
+
+    public static Integer getReportId() {
+        return reportId;
+    }
+
+    public static void setReportId(Integer reportId) {
+        ContextCatcher.reportId = reportId;
     }
 }

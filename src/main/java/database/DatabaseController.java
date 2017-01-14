@@ -53,6 +53,45 @@ public class DatabaseController {
         }
     }
 
+    public ObservableList<ReportCompanyListView> selectPatientsForReport(Integer companyId, Integer reportId) {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<ReportCompanyListView> data = FXCollections.observableArrayList();
+        try {
+            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_PATIENTS_BY_RAPORT_ID_AND_COMPANY_ID);
+            preparedStatement.setInt(1, companyId);
+            preparedStatement.setInt(2, reportId);
+
+            resultSet = preparedStatement.executeQuery();
+
+            try {
+                while (resultSet.next()) {
+                    data.add(
+                        new ReportCompanyListView(
+                                resultSet.getString("imie"),
+                                resultSet.getString("nazwisko"),
+                                resultSet.getInt("cena")
+                        )
+                    );
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException("Nie utworzono uzytkownika, blad krytyczny!");
+            }
+        } catch (SQLException e) {
+            logger.info(e.getMessage());
+            databaseService.cleanUpConnections();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return data;
+    }
+
     public void insertNewUserAsCompany(String name, String surname, String type) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -610,13 +649,14 @@ public class DatabaseController {
         return data;
     }
 
-    public Integer selectSumForCompany(Integer companyId) {
+    public Integer selectSumForCompany(Integer companyId, Integer reportId) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Integer sum = 0;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(SELECT_SUM_FOR_PATIENTS_COMPANY);
             preparedStatement.setInt(1, companyId);
+            preparedStatement.setInt(2, reportId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 sum = resultSet.getInt("sum");

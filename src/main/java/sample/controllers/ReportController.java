@@ -4,16 +4,13 @@ import database.DatabaseController;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
+import javafx.scene.input.MouseEvent;
 import org.apache.log4j.Logger;
 import sample.ContextCatcher;
-import sample.views.AdminListView;
-import sample.views.PatientListView;
 import sample.views.ReportListView;
 
 import java.net.URL;
@@ -37,9 +34,6 @@ public class ReportController implements Initializable {
 
     @FXML
     private Button backBtn;
-
-    @FXML
-    private TextField sumField;
 
     private ObservableList<ReportListView> data = null;
 
@@ -66,11 +60,7 @@ public class ReportController implements Initializable {
             }
         });
 
-        if(ContextCatcher.getCompanyId() == null) {
-            sumField.setText("0");
-        } else {
-            sumField.setText(String.valueOf(databaseController.selectSumForCompany(ContextCatcher.getCompanyId())));
-        }
+        logger.info("Context id :" + ContextCatcher.getCompanyId());
 
         if(ContextCatcher.getCompanyId() == null)
             addNewBtn.setDisable(true);
@@ -91,6 +81,19 @@ public class ReportController implements Initializable {
     private void initializeTableView() {
         TableColumn name = new TableColumn("Numer raportu");
         TableColumn surname = new TableColumn("Data");
+
+        tableView.setRowFactory(param -> {
+            TableRow<ReportListView> tableRow = new TableRow();
+            tableRow.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && (!tableRow.isEmpty())) {
+                    ReportListView reportListView = tableRow.getItem();
+                    logger.info("Report id selected: " + reportListView.getId());
+                    ContextCatcher.setReportId(reportListView.getId());
+                    changeSceneContext(event, getClass().getClassLoader().getResource("forms/reportsPreviewForm.fxml"), databaseService);
+                }
+            });
+            return tableRow;
+        });
 
         name.setCellValueFactory(
                 new PropertyValueFactory<ReportListView, String>("id")

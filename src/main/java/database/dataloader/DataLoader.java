@@ -33,14 +33,16 @@ public class DataLoader {
             {
                     UserDTO.builder().name("test1").surname("surnametest1").type("Standard").build(),
                     UserDTO.builder().name("test2").surname("surnametest2").type("Standard").build(),
-                    UserDTO.builder().name("test3").surname("surnametest3").type("Standard").build()
+                    UserDTO.builder().name("test3").surname("surnametest3").type("Standard").build(),
+                    UserDTO.builder().name("Firma 1").surname("surnametest3").type("Company").build()
             };
 
     final CredentialsDTO[] hasla =
             {
                     CredentialsDTO.builder().login("admin").password("admin").user_id(1).build(),
                     CredentialsDTO.builder().login("user").password("user").user_id(2).build(),
-                    CredentialsDTO.builder().login("testLogin3").password("testPassword3").user_id(3).build()
+                    CredentialsDTO.builder().login("user2").password("user2").user_id(3).build(),
+                    CredentialsDTO.builder().login("f").password("f").user_id(4).build()
             };
 
     final ExaminesDTO[] examinesDTOS =
@@ -82,17 +84,17 @@ public class DataLoader {
 
     final ReportsDTO[] reportsDTOS =
             {
-                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(1).build(),
-                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(2).build()
+//                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(1).build(),
+//                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(2).build()
             };
 
     final ReportContainerDTO[] reportContainerDTOS =
             {
-                    ReportContainerDTO.builder().reportId(1).examineId(1).build(),
-                    ReportContainerDTO.builder().reportId(1).examineId(2).build(),
-                    ReportContainerDTO.builder().reportId(1).examineId(3).build(),
-                    ReportContainerDTO.builder().reportId(2).examineId(2).build(),
-                    ReportContainerDTO.builder().reportId(2).examineId(3).build()
+//                    ReportContainerDTO.builder().reportId(1).examineId(1).build(),
+//                    ReportContainerDTO.builder().reportId(1).examineId(2).build(),
+//                    ReportContainerDTO.builder().reportId(1).examineId(3).build(),
+//                    ReportContainerDTO.builder().reportId(2).examineId(2).build(),
+//                    ReportContainerDTO.builder().reportId(2).examineId(3).build()
             };
 
     final String[] sequences = {
