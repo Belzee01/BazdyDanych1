@@ -182,15 +182,24 @@ CREATE VIEW user_view AS select uzytkownicy.id, uzytkownicy.imie, uzytkownicy.na
 CREATE OR REPLACE FUNCTION getBadanieId() RETURNS TRIGGER AS $example_table$
 DECLARE
   bId RECORD;
+  checkDate INTEGER;
 BEGIN
-  FOR bId IN (select * from badanie where pacjent_id in (select id from pacjent where firmy_id = new.firmy_id)) LOOP
-    INSERT into kontener_raportow (raporty_id, badanie_id)  VALUES (new.id, bId.id);
-  END LOOP;
+  SELECT count(id) into checkDate from raporty where firmy_id = new.firmy_id;
+  IF checkDate = 1 THEN
+    FOR bId IN (select * from badanie where pacjent_id in (select id from pacjent where firmy_id = new.firmy_id) and badanie.data >  (badanie.data - INTERVAL '1 day')) LOOP
+      INSERT into kontener_raportow (raporty_id, badanie_id)  VALUES (new.id, bId.id);
+    END LOOP;
+  END IF ;
+  IF checkDate > 1 THEN
+    FOR bId IN (select * from badanie where pacjent_id in (select id from pacjent where firmy_id = new.firmy_id) and badanie.data > (select data from raporty where id = (SELECT id from raporty where firmy_id = new.firmy_id ORDER BY id DESC LIMIT 1 OFFSET 1) and firmy_id = new.firmy_id)) LOOP
+      INSERT into kontener_raportow (raporty_id, badanie_id)  VALUES (new.id, bId.id);
+    END LOOP;
+  END IF;
   RETURN NEW;
 END;
 $example_table$ LANGUAGE plpgsql;
 
 CREATE TRIGGER raporty_trigger AFTER INSERT ON raporty
-FOR EACH ROW EXECUTE PROCEDURE getBadanieId();
+FOR ROW EXECUTE PROCEDURE getBadanieId();
 
 
