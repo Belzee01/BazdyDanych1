@@ -81,7 +81,7 @@ public class Queries {
 
         public static String SELECT_SUM_FOR_PATIENTS_COMPANY = "select sum(cena) from badanie FULL JOIN pacjent ON badanie.pacjent_id = pacjent.id FULL JOIN badania ON badanie.badania_id = badania.id where badanie.id in (select badanie_id from raporty RIGHT JOIN kontener_raportow ON raporty.id = kontener_raportow.raporty_id WHERE firmy_id = ? and raporty_id = ?);";
 
-        public static String SELECT_PATIENTS_BY_RAPORT_ID_AND_COMPANY_ID = "select imie, nazwisko, cena from badanie FULL JOIN pacjent ON badanie.pacjent_id = pacjent.id FULL JOIN badania ON badanie.badania_id = badania.id where badanie.id in (select badanie_id from raporty RIGHT JOIN kontener_raportow ON raporty.id = kontener_raportow.raporty_id WHERE firmy_id = ? and raporty_id = ?);";
+        public static String SELECT_PATIENTS_BY_RAPORT_ID_AND_COMPANY_ID = "select imie, nazwisko, nazwa, cena from badanie FULL JOIN pacjent ON badanie.pacjent_id = pacjent.id FULL JOIN badania ON badanie.badania_id = badania.id where badanie.id in (select badanie_id from raporty RIGHT JOIN kontener_raportow ON raporty.id = kontener_raportow.raporty_id WHERE firmy_id = ? and raporty_id = ?);";
 
         public static String INSERT_NEW_REPORT = "insert into raporty (data, firmy_id) VALUES (current_timestamp, ?);";
 

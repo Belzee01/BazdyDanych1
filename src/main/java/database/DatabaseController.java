@@ -73,6 +73,7 @@ public class DatabaseController {
                         new ReportCompanyListView(
                                 resultSet.getString("imie"),
                                 resultSet.getString("nazwisko"),
+                                resultSet.getString("nazwa"),
                                 resultSet.getInt("cena")
                         )
                     );

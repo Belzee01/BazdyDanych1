@@ -9,12 +9,26 @@ import javafx.beans.property.SimpleStringProperty;
 public class ReportCompanyListView {
     private SimpleStringProperty name;
     private SimpleStringProperty surname;
+    private SimpleStringProperty examine;
     private SimpleIntegerProperty prise;
 
-    public ReportCompanyListView(String name, String surname, Integer prise) {
+    public ReportCompanyListView(String name, String surname, String examine, Integer prise) {
         this.name = new SimpleStringProperty(name);
         this.surname = new SimpleStringProperty(surname);
+        this.examine = new SimpleStringProperty(examine);
         this.prise = new SimpleIntegerProperty(prise);
+    }
+
+    public String getExamine() {
+        return examine.get();
+    }
+
+    public SimpleStringProperty examineProperty() {
+        return examine;
+    }
+
+    public void setExamine(String examine) {
+        this.examine.set(examine);
     }
 
     public String getName() {

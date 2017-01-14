@@ -54,6 +54,7 @@ public class ReportPreviewForm extends ParentForm implements Initializable {
     private void initializeTableView() {
         TableColumn name = new TableColumn("Imie pacjenta");
         TableColumn surname = new TableColumn("Nazwisko pacjenta");
+        TableColumn examine = new TableColumn("Nazwa badania");
         TableColumn prise = new TableColumn("Cena");
 
         name.setCellValueFactory(
@@ -63,6 +64,10 @@ public class ReportPreviewForm extends ParentForm implements Initializable {
                 new PropertyValueFactory<ReportCompanyListView, String>("surname")
         );
 
+        examine.setCellValueFactory(
+                new PropertyValueFactory<ReportCompanyListView, String>("examine")
+        );
+
         prise.setCellValueFactory(
                 new PropertyValueFactory<ReportCompanyListView, Integer>("prise")
         );
@@ -70,7 +75,7 @@ public class ReportPreviewForm extends ParentForm implements Initializable {
         data = databaseController.selectPatientsForReport(ContextCatcher.getCompanyId(), ContextCatcher.getReportId());
 
         tableView.setItems(data);
-        tableView.getColumns().addAll(name, surname, prise);
+        tableView.getColumns().addAll(name, surname, examine, prise);
     }
 }
 

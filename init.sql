@@ -4,6 +4,7 @@ drop view user_view;
 
 drop TRIGGER raporty_trigger ON raporty;
 drop TRIGGER credentials_trigger ON hasla;
+DROP TRIGGER company_check_trigger ON firmy;
 DROP TABLE kontener_raportow;
 DROP TABLE admini;
 DROP TABLE badanie;
@@ -223,3 +224,18 @@ CREATE TRIGGER credentials_trigger BEFORE INSERT ON hasla
 FOR ROW EXECUTE PROCEDURE checkCredentials();
 
 
+CREATE OR REPLACE FUNCTION companyCheck() RETURNS TRIGGER AS $example_table$
+DECLARE
+  bId RECORD;
+  checkDate INTEGER;
+BEGIN
+  SELECT INTO bId * from firmy where nazwa=new.nazwa;
+  IF bId.id IS NOT NULL THEN
+    RAISE 'Firma o podajnej nazwie juz istnieje : % ', new.nazwa;
+  END IF;
+  RETURN NEW;
+END;
+$example_table$ LANGUAGE plpgsql;
+
+CREATE TRIGGER company_check_trigger BEFORE INSERT ON firmy
+FOR ROW EXECUTE PROCEDURE companyCheck();
