@@ -12,11 +12,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Created by Kajetan on 2016-12-02.
- */
 public class ControllerUtils {
 
+    /**
+     * Changes stage based on URL we pass
+     * @param event Event that caused method to be invoked
+     * @param url URL to specific FXML file that describes new stage
+     * @param databaseService Instance of DatabaseService. After changing stage connection to database is closed
+     */
     public static void changeSceneContext(ActionEvent event, URL url, DatabaseService databaseService) {
         databaseService.closeConnection();
         Parent mainPage = null;
@@ -32,6 +35,12 @@ public class ControllerUtils {
         stage.show();
     }
 
+    /**
+     * Changes stage based on URL we pass
+     * @param event Event that caused method to be invoked
+     * @param url URL to specific FXML file that describes new stage
+     * @param databaseService Instance of DatabaseService. After changing stage connection to database is closed
+     */
     public static void changeSceneContext(MouseEvent event, URL url, DatabaseService databaseService) {
         databaseService.closeConnection();
         Parent mainPage = null;
@@ -47,6 +56,11 @@ public class ControllerUtils {
         stage.show();
     }
 
+    /**
+     * Changes stage based on URL we pass
+     * @param event Event that caused method to be invoked
+     * @param url URL to specific FXML file that describes new stage
+     */
     public static void changeSceneContext(ActionEvent event, URL url) {
         Parent mainPage = null;
         Scene scene = null;

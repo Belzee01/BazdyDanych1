@@ -50,6 +50,13 @@ public class CompanyAddForm extends ParentForm implements Initializable {
         });
     }
 
+    /**
+     * Inserts new company into firmy table in databse
+     * @param name Comapny name
+     * @param surname Company nip
+     * @param login Company address
+     * @throws DatabaseException In case of invliad data exception will be thrown
+     */
     private void saveNewCompanyInDB(String name, String surname, String login) throws DatabaseException {
             databaseController.insertNewCompany(name, surname, login);
     }

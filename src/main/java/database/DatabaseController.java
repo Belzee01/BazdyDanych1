@@ -21,12 +21,26 @@ public class DatabaseController {
 
     private static Logger logger = Logger.getLogger(DatabaseController.class);
 
+    /**
+     * Used to create, open, close connection to database
+     */
     private DatabaseService databaseService = null;
 
+    /**
+     * Dependency injection. Sets DatabaseService instance used to create connection to database
+     * @param databaseService Instance of DatabaseService
+     */
     public DatabaseController(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
+    /**
+     *
+     * @param name
+     * @param surname
+     * @param type
+     * @throws DatabaseException
+     */
     public void insertNewUser(String name, String surname, String type) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         try {

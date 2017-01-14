@@ -1,7 +1,7 @@
 package sample;
 
 /**
- * Created by DW on 2017-01-11.
+ * Describes account type that is used during application usage and data that is inserted to database
  */
 public enum ACCOUNT_TYPE {
     STANDARD("Standard"),

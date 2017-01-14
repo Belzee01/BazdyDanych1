@@ -2,6 +2,10 @@ package sample;
 
 import lombok.Data;
 
+/**
+ * Used to pass and catch global context of application such as reportId, companyId, account_type which are set during specific actions
+ * and can be invoked during application usage
+ */
 @Data
 public class ContextCatcher {
     static ACCOUNT_TYPE account_type = null;

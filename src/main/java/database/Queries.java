@@ -100,6 +100,9 @@ public class Queries {
     }
 
     public static class DataLoaderQueries {
+        /**
+         * Used in dataloader cleanUpDatabase to remove all test data and prepare tables for next testing session
+         */
         public static final String CLEAN_UP_ALL_TABLES = "delete from kontener_raportow; delete from raporty; delete from admini; delete from hasla; delete from uzytkownicy; delete from badanie; delete from badania; delete from lekarze;delete from pacjent;delete from firmy;";
     }
 }

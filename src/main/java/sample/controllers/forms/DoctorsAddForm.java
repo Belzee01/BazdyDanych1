@@ -41,6 +41,11 @@ public class DoctorsAddForm extends ParentForm implements Initializable {
         });
     }
 
+    /**
+     * Inserts new doctor into lekarze table in database
+     * @param name Doctors' name
+     * @param surname Doctors' surname
+     */
     private void saveNewDoctorInDB(String name, String surname) {
         databaseController.insertNewDoctor(name, surname);
     }

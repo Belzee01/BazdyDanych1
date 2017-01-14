@@ -9,9 +9,6 @@ import sample.controllers.AdminListController;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by Kajetan on 2017-01-06.
- */
 public class ParentForm {
 
     private static Logger logger = Logger.getLogger(ParentForm.class);

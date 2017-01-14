@@ -1,17 +1,16 @@
 package sample.controllers.forms;
 
-import database.DatabaseController;
-import database.services.DatabaseService;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.apache.log4j.Logger;
 import sample.ContextCatcher;
 import sample.views.ReportCompanyListView;
-import sample.views.ReportListView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,6 +50,9 @@ public class ReportPreviewForm extends ParentForm implements Initializable {
         initializeTableView();
     }
 
+    /**
+     * Initializes all properties of tableView and binds column to actual data. Selects specific data such as patients for given company
+     */
     private void initializeTableView() {
         TableColumn name = new TableColumn("Imie pacjenta");
         TableColumn surname = new TableColumn("Nazwisko pacjenta");

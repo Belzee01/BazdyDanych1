@@ -22,6 +22,10 @@ public class DatabaseService {
         properties = loadProperties();
     }
 
+    /**
+     * Method for setting autocommit option, if false then autocommit is disabled, otherwise it's enabled
+     * @param commit
+     */
     public void setAutoCommit(boolean commit) {
         try {
             this.connection.setAutoCommit(commit);
@@ -30,6 +34,10 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Opens application.properties file in which there are all information about database connection
+     * @return Properties object containing all data needed to connect database
+     */
     private Properties loadProperties() {
         Properties properties = new Properties();
         InputStream stream = null;
@@ -52,6 +60,9 @@ public class DatabaseService {
         return properties;
     }
 
+    /**
+     * Makes connection to database, unless invoked, it's not possible to run any queries on database
+     */
     public void connectToDb() {
         try {
              Class.forName(properties.getProperty("JDBC_DRIVER"));
@@ -68,6 +79,9 @@ public class DatabaseService {
         logger.info("Connected to the DB");
     }
 
+    /**
+     * Closes connection to database. Should be invoked after we're finished working with database
+     */
     public void closeConnection() {
         try{
             if(connection != null)
@@ -78,10 +92,17 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Getter for current connection to database
+     * @return Current connection
+     */
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Rollbacks failed transaction
+     */
     public void cleanUpConnections() {
         if (getConnection() != null) {
             try {

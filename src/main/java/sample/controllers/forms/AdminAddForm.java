@@ -50,6 +50,13 @@ public class AdminAddForm extends ParentForm implements Initializable {
         });
     }
 
+    /**
+     * Inserts new admin into admini table in database
+     * @param name Name of user
+     * @param surname Surname of user
+     * @param login Login of user
+     * @throws DatabaseException If we try adding non existing user or duplicate user exception will be thrown
+     */
     private void saveNewAdminInDB(String name, String surname, String login) throws DatabaseException {
         databaseController.insertNewAdmin(name, surname, login);
     }

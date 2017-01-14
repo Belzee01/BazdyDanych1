@@ -84,23 +84,19 @@ public class DataLoader {
 
     final ReportsDTO[] reportsDTOS =
             {
-//                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(1).build(),
-//                    ReportsDTO.builder().data(new Timestamp(System.currentTimeMillis())).firmId(2).build()
             };
 
     final ReportContainerDTO[] reportContainerDTOS =
             {
-//                    ReportContainerDTO.builder().reportId(1).examineId(1).build(),
-//                    ReportContainerDTO.builder().reportId(1).examineId(2).build(),
-//                    ReportContainerDTO.builder().reportId(1).examineId(3).build(),
-//                    ReportContainerDTO.builder().reportId(2).examineId(2).build(),
-//                    ReportContainerDTO.builder().reportId(2).examineId(3).build()
             };
 
     final String[] sequences = {
             "kontener_raportow_id_seq", "uzytkownicy_id_seq", "admini_id_seq", "badania_id_seq", "badanie_id_seq", "firmy_id_seq", "hasla_id_seq", "lekarze_id_seq", "pacjent_id_seq", "raporty_id_seq"
     };
 
+    /**
+     * Resets all sequences and removes all data from related tables
+     */
     public void cleanUpDatabase() {
         PreparedStatement preparedStatement = null;
         try {
@@ -131,6 +127,9 @@ public class DataLoader {
         }
     }
 
+    /**
+     * Inserts test data into specific tables based on hardcoded data
+     */
     public void putMockDataInDatabase() {
         cleanUpDatabase();
 

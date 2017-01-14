@@ -93,6 +93,9 @@ public class PatientAddForm extends ParentForm implements Initializable {
         }
     }
 
+    /**
+     * Sets all options for examineCombo and doctorCombo
+     */
     private void initializeComboBox() {
         options = databaseController.selectAllExamines();
 
@@ -102,6 +105,9 @@ public class PatientAddForm extends ParentForm implements Initializable {
         doctorCombo.setItems(doctors);
     }
 
+    /**
+     * Binds columns to actual data and sets all properties of tableView
+     */
     private void initializeTableView() {
         data = FXCollections.observableArrayList();
 

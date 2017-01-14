@@ -42,6 +42,12 @@ public class ExamineAddForm extends ParentForm implements Initializable {
         });
     }
 
+    /**
+     * Inserts new examine into badania table in database
+     * @param name Examines' name
+     * @param prise Examines' prise
+     * @param time Time that examine takes
+     */
     private void saveNewExamineInDB(String name, String prise, String time) {
         databaseController.insertNewExamine(name, prise, time);
     }
