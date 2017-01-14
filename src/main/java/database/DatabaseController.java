@@ -811,7 +811,7 @@ public class DatabaseController {
         }
     }
 
-    public void insertNewAdmin(String name, String surname, String login) {
+    public void insertNewAdmin(String name, String surname, String login) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -835,6 +835,7 @@ public class DatabaseController {
             logger.info(d.getMessage());
         } catch (SQLException e) {
             databaseService.cleanUpConnections();
+            throw new DatabaseException(e.getMessage());
         } finally {
             if (preparedStatement != null) {
                 try {

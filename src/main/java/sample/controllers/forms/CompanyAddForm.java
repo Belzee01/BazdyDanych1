@@ -36,7 +36,12 @@ public class CompanyAddForm extends ParentForm implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            saveNewCompanyInDB(nameField.getText(), nipField.getText(), adresField.getText());
+            try {
+                saveNewCompanyInDB(nameField.getText(), nipField.getText(), adresField.getText());
+            } catch (DatabaseException e) {
+                ErrorForm.showError("Error", e.getMessage());
+                return;
+            }
             changeSceneContext(event, getClass().getClassLoader().getResource("companyList.fxml"), databaseService);
         });
 
@@ -45,11 +50,7 @@ public class CompanyAddForm extends ParentForm implements Initializable {
         });
     }
 
-    private void saveNewCompanyInDB(String name, String surname, String login) {
-        try {
+    private void saveNewCompanyInDB(String name, String surname, String login) throws DatabaseException {
             databaseController.insertNewCompany(name, surname, login);
-        } catch (DatabaseException e) {
-            ErrorForm.showError("Error", e.getMessage());
-        }
     }
 }

@@ -1,6 +1,7 @@
 package sample.controllers.forms;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,7 +36,12 @@ public class AdminAddForm extends ParentForm implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            saveNewAdminInDB(nameField.getText(), surnameField.getText(), loginField.getText());
+            try {
+                saveNewAdminInDB(nameField.getText(), surnameField.getText(), loginField.getText());
+            } catch (DatabaseException e) {
+                ErrorForm.showError("Error", e.getMessage());
+                return;
+            }
             changeSceneContext(event, getClass().getClassLoader().getResource("adminList.fxml"), databaseService);
         });
 
@@ -44,7 +50,7 @@ public class AdminAddForm extends ParentForm implements Initializable {
         });
     }
 
-    private void saveNewAdminInDB(String name, String surname, String login) {
+    private void saveNewAdminInDB(String name, String surname, String login) throws DatabaseException {
         databaseController.insertNewAdmin(name, surname, login);
     }
 }

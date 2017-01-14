@@ -16,7 +16,6 @@
                <children>
                   <Button fx:id="addNewBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Dodaj" />
                   <Separator prefHeight="2.0" prefWidth="39.0" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="71.0" text="Edytuj" fx:id="editBtn"/>
                   <Separator prefHeight="0.0" prefWidth="353.0" />
                   <Button fx:id="backBtn" mnemonicParsing="false" text="Wróć" />
                </children>
