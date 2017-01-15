@@ -1,6 +1,7 @@
 package sample.controllers;
 
 import database.DatabaseController;
+import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.util.Callback;
 import org.apache.log4j.Logger;
 import sample.ACCOUNT_TYPE;
 import sample.ContextCatcher;
+import sample.controllers.forms.ErrorForm;
 import sample.views.ExamineListView;
 import sample.views.PatientListView;
 
@@ -116,9 +118,12 @@ public class PatientListController implements Initializable {
                                         {
                                             PatientListView patient = getTableView().getItems().get(getIndex());
 
-                                            databaseController.deleteFromPatientList(patient.getId());
-
-                                            data.remove(getIndex());
+                                            try {
+                                                databaseController.deleteFromPatientList(patient.getId());
+                                                data.remove(getIndex());
+                                            } catch (DatabaseException e) {
+                                                ErrorForm.showError("Error", e.getMessage());
+                                            }
                                         });
                                         setGraphic(btn);
                                         setText(null);

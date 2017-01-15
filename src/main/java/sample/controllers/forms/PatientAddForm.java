@@ -61,11 +61,15 @@ public class PatientAddForm extends ParentForm implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         saveBtn.setOnAction(event -> {
-            if (nameField.getText().equals("") || surnameField.getText().equals("") || doctorCombo.getSelectionModel().getSelectedIndex()==-1 || examineTable.getItems().isEmpty()) {
+            if (nameField.getText().equals("") || surnameField.getText().equals("") || doctorCombo.getSelectionModel().getSelectedIndex() == -1 || examineTable.getItems().isEmpty()) {
                 ErrorForm.showError("Error", "Nie wypelniono wszystkich pól");
                 return;
             }
-            saveNewpatientInDB(nameField.getText(), surnameField.getText(), companyField.getText(), (DoctorsListView) doctorCombo.getValue(), data);
+            try {
+                saveNewpatientInDB(nameField.getText(), surnameField.getText(), companyField.getText(), (DoctorsListView) doctorCombo.getValue(), data);
+            } catch (DatabaseException e) {
+                ErrorForm.showError("Error", e.getMessage());
+            }
             changeSceneContext(event, getClass().getClassLoader().getResource("patientList.fxml"), databaseService);
         });
 
@@ -85,12 +89,17 @@ public class PatientAddForm extends ParentForm implements Initializable {
         initializeTableView();
     }
 
-    private void saveNewpatientInDB(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) {
-        try {
-            databaseController.insertPatient(name, surname, company, doctor, examines);
-        } catch (DatabaseException e) {
-            ErrorForm.showError("Error", e.getMessage());
-        }
+    /**
+     * Saves given patient in DB
+     * @param name Patients name
+     * @param surname Patients surname
+     * @param company Company name thats patient is worker
+     * @param doctor Selected doctor as instances of DoctorsListView from selection box
+     * @param examines List of selected examines
+     * @throws DatabaseException If we pass invliad comapny name exception will be thrown
+     */
+    private void saveNewpatientInDB(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) throws DatabaseException {
+        databaseController.insertPatient(name, surname, company, doctor, examines);
     }
 
     /**

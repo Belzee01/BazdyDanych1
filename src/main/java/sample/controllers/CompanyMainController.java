@@ -27,7 +27,7 @@ public class CompanyMainController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         exitBtn.setOnAction(event -> {
-            Platform.exit();
+            changeSceneContext(event, getClass().getClassLoader().getResource("sample.fxml"));
         });
 
         doctorsBtn.setOnAction(event -> {

@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 import sample.ACCOUNT_TYPE;
 import sample.ContextCatcher;
+import sample.controllers.forms.ErrorForm;
 
 import java.io.IOException;
 import java.net.URL;
@@ -91,7 +92,7 @@ public class Controller implements Initializable {
                     }
                 }
             } catch (DatabaseException e) {
-                logger.info(e.getMessage());
+                ErrorForm.showError("Error", e.getMessage());
             }
         });
 

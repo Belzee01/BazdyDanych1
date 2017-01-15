@@ -4,18 +4,17 @@ import database.exceptions.DatabaseException;
 import database.services.DatabaseService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import org.apache.log4j.Logger;
 import sample.controllers.forms.ErrorForm;
 import sample.views.*;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-import static database.Queries.AdminUser.*;
 import static database.Queries.*;
+import static database.Queries.AdminUser.*;
 
 public class DatabaseController {
 
@@ -28,6 +27,7 @@ public class DatabaseController {
 
     /**
      * Dependency injection. Sets DatabaseService instance used to create connection to database
+     *
      * @param databaseService Instance of DatabaseService
      */
     public DatabaseController(DatabaseService databaseService) {
@@ -36,9 +36,10 @@ public class DatabaseController {
 
     /**
      * Inserts new user to database
-     * @param name Name of user that we want to save in DB
+     *
+     * @param name    Name of user that we want to save in DB
      * @param surname Surname of user
-     * @param type Type of user. Allows Standard or Company
+     * @param type    Type of user. Allows Standard or Company
      * @throws DatabaseException Invalid data causes exception to be thrown
      */
     public void insertNewUser(String name, String surname, String type) throws DatabaseException {
@@ -72,8 +73,9 @@ public class DatabaseController {
 
     /**
      * Retrieves all patients related to generated report based on reportId and comapnyId
+     *
      * @param companyId Identifies company that patients will be selected for
-     * @param reportId Identifies report that all examines are related to
+     * @param reportId  Identifies report that all examines are related to
      * @return Gets list of patients with examine name and prise
      */
     public ObservableList<ReportCompanyListView> selectPatientsForReport(Integer companyId, Integer reportId) {
@@ -90,12 +92,12 @@ public class DatabaseController {
             try {
                 while (resultSet.next()) {
                     data.add(
-                        new ReportCompanyListView(
-                                resultSet.getString("imie"),
-                                resultSet.getString("nazwisko"),
-                                resultSet.getString("nazwa"),
-                                resultSet.getInt("cena")
-                        )
+                            new ReportCompanyListView(
+                                    resultSet.getString("imie"),
+                                    resultSet.getString("nazwisko"),
+                                    resultSet.getString("nazwa"),
+                                    resultSet.getInt("cena")
+                            )
                     );
                 }
             } catch (SQLException e) {
@@ -118,9 +120,10 @@ public class DatabaseController {
 
     /**
      * Inserts new user with Company type
-     * @param name Company name
+     *
+     * @param name    Company name
      * @param surname Company nip
-     * @param type Company type
+     * @param type    Company type
      * @throws DatabaseException Trying to insert duplicate data causes exception
      */
     public void insertNewUserAsCompany(String name, String surname, String type) throws DatabaseException {
@@ -174,6 +177,7 @@ public class DatabaseController {
 
     /**
      * Retries newly created user identifier
+     *
      * @param surname Surname of searched user
      * @return Returns user identifier
      * @throws DatabaseException If user based on surname not found exception thrown
@@ -213,7 +217,8 @@ public class DatabaseController {
 
     /**
      * Inserts new record to hasla table
-     * @param login Login for newly created user
+     *
+     * @param login    Login for newly created user
      * @param password Password for newly created user
      * @param selector newly created user identifier
      */
@@ -254,7 +259,8 @@ public class DatabaseController {
 
     /**
      * Checks if given user exists
-     * @param login User login
+     *
+     * @param login    User login
      * @param password user password
      * @throws DatabaseException If user with given credentials does not exists then exception is thrown
      */
@@ -288,6 +294,7 @@ public class DatabaseController {
 
     /**
      * Checks if user exists based on login
+     *
      * @param login User login
      * @throws DatabaseException If user already exists then exception is thrown
      */
@@ -320,7 +327,8 @@ public class DatabaseController {
 
     /**
      * Checks if user is admin
-     * @param login User login
+     *
+     * @param login    User login
      * @param password user password
      * @return If user is on admin list then it will return true, otherwise user is non admin user and false is retrieved
      */
@@ -364,7 +372,8 @@ public class DatabaseController {
 
     /**
      * Checks account type based on login and password
-     * @param login User login
+     *
+     * @param login    User login
      * @param password User password
      * @return Gets account type as String
      */
@@ -410,6 +419,7 @@ public class DatabaseController {
 
     /**
      * Retrieves all admins
+     *
      * @return Admin list filled with AdminListView instances
      */
     public ObservableList<AdminListView> selectAllAdmins() {
@@ -440,6 +450,7 @@ public class DatabaseController {
 
     /**
      * Removes given admin from admini table
+     *
      * @param adminId Admin identifier - record is removed based on that parameter
      */
     public void deleteFromAdminList(int adminId) {
@@ -464,6 +475,7 @@ public class DatabaseController {
 
     /**
      * Retrieves all examines from badania table
+     *
      * @return Examine list filled with ExamineListView instances
      */
     public ObservableList<ExamineListView> selectAllExamines() {
@@ -499,6 +511,11 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Removes examine from badania table identified by examineId
+     *
+     * @param examineId Examine identifier that we want to remove
+     */
     public void deleteFromExamineList(int examineId) {
         PreparedStatement preparedStatement = null;
         try {
@@ -519,6 +536,11 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Retrieves list of all doctors from lekarze table
+     *
+     * @return List of DoctorsListView instances
+     */
     public ObservableList<DoctorsListView> selectAllDoctors() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -551,11 +573,16 @@ public class DatabaseController {
         return data;
     }
 
-    public void deleteFromDoctorsList(int examineId) {
+    /**
+     * Removes from lekarze table based on passed doctorId
+     *
+     * @param doctorId Selected doctor identifier
+     */
+    public void deleteFromDoctorsList(int doctorId) {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_DOCTORS_LIST);
-            preparedStatement.setInt(1, examineId);
+            preparedStatement.setInt(1, doctorId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -571,6 +598,11 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Retrieves all companies
+     *
+     * @return List of CompanyListView instances
+     */
     public ObservableList<CompanyListView> selectAllCompanies() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -604,6 +636,12 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Removes from firmy table based on passed company identifier
+     *
+     * @param companyId Selected company
+     * @throws DatabaseException Exception uis thrown if there is foreign key violation. Company cannot be removed if there are still registered patients
+     */
     public void deleteFromCompanyList(int companyId) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         databaseService.setAutoCommit(false);
@@ -627,6 +665,11 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Retrieves all patients
+     *
+     * @return List of PatientLisView instances
+     */
     public ObservableList<PatientListView> selectAllPatients() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -660,37 +703,11 @@ public class DatabaseController {
         return data;
     }
 
-    public ObservableList<PatientListView> selectAllPatientsForCompany(Integer companyId) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        ObservableList<PatientListView> data = FXCollections.observableArrayList();
-        try {
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_ALL_PACIENT_FOR_COMPANY);
-            preparedStatement.setInt(1, companyId);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                data.add(
-                        new PatientListView(
-                                resultSet.getString("imie"),
-                                resultSet.getString("nazwisko")
-                        )
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            databaseService.cleanUpConnections();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return data;
-    }
-
+    /**
+     * Retrieves all reports for specified company
+     * @param companyId Company identifier
+     * @return List of ReportListViewInstances based on companyId
+     */
     public ObservableList<ReportListView> selectAllReports(Integer companyId) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -723,6 +740,12 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Calculates sum of all examines within given report for given comapny
+     * @param companyId Company identifier. Reports are selected based on this selector
+     * @param reportId Report identifier. Sum is calculated for specific report
+     * @return Integer value as sum of all examines within report
+     */
     public Integer selectSumForCompany(Integer companyId, Integer reportId) {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -750,6 +773,10 @@ public class DatabaseController {
         return sum;
     }
 
+    /**
+     * Adds new report into raporty table. Report is added for specific company
+     * @param companyId Company identifier. Report is added for specified company
+     */
     public void saveNewReportInDB(Integer companyId) {
         PreparedStatement preparedStatement = null;
         try {
@@ -770,15 +797,20 @@ public class DatabaseController {
         }
     }
 
-    public void deleteFromPatientList(int patientId) {
+    /**
+     * Removes patient from pacjent table based on passed patient id
+     * @param patientId Patient identifier
+     */
+    public void deleteFromPatientList(int patientId) throws DatabaseException {
         PreparedStatement preparedStatement = null;
+        databaseService.setAutoCommit(false);
         try {
             preparedStatement = databaseService.getConnection().prepareStatement(DELETE_FROM_PATIENT_LIST);
             preparedStatement.setInt(1, patientId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
             databaseService.cleanUpConnections();
+            throw new DatabaseException("Nie można usunąć archiwalnego badania. Tylko jeszcze nie zaraportowani pacjenci mogą zostać usunięci!");
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -787,9 +819,14 @@ public class DatabaseController {
                     e.printStackTrace();
                 }
             }
+            databaseService.setAutoCommit(true);
         }
     }
 
+    /**
+     * Retrieves all users from uzytkownicy table
+     * @return Returns list of UserListView instances
+     */
     public ObservableList<UserListView> selectAllUsers() {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -824,6 +861,10 @@ public class DatabaseController {
         return data;
     }
 
+    /**
+     * Removes user from uzytkownicy table based on passed user identifier
+     * @param userId User identifier
+     */
     public void deleteFromUserList(int userId) {
         PreparedStatement preparedStatement = null;
         try {
@@ -844,6 +885,13 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * Adds new admin to admini table
+     * @param name User name
+     * @param surname User surname
+     * @param login User login
+     * @throws DatabaseException If passed user data is invalid then exception will be thrown
+     */
     public void insertNewAdmin(String name, String surname, String login) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -880,41 +928,15 @@ public class DatabaseController {
         }
     }
 
-    public void updateAdmin(String name, String surname, String login) {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = databaseService.getConnection().prepareStatement(SELECT_USER_ID);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-            resultSet = preparedStatement.executeQuery();
-            Integer userId = null;
-
-            while (resultSet.next()) {
-                userId = resultSet.getInt("id");
-            }
-
-            if (userId == null)
-                throw new DatabaseException("Nie znaleziono uzytkownika!");
-
-            preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_ADMIN);
-            preparedStatement.setInt(1, userId);
-            preparedStatement.executeUpdate();
-        } catch (DatabaseException d) {
-            logger.info(d.getMessage());
-        } catch (SQLException e) {
-            databaseService.cleanUpConnections();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
+    /**
+     * Adds new patient and examines related to him based on company identifier
+     * @param name Patient name
+     * @param surname Patient surname
+     * @param company Company name
+     * @param doctor Slected doctor
+     * @param examines Selected list of examines for ptient
+     * @throws DatabaseException If company name is invalid then exception will be thrown
+     */
     public void insertPatient(String name, String surname, String company, DoctorsListView doctor, List<ExamineListView> examines) throws DatabaseException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -933,7 +955,7 @@ public class DatabaseController {
             preparedStatement = databaseService.getConnection().prepareStatement(INSERT_NEW_PATIENT);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
-            if(companyId == null)
+            if (companyId == null)
                 throw new DatabaseException("Nie poprawna nazwa firmy!");
             preparedStatement.setInt(3, companyId);
             preparedStatement.executeUpdate();
